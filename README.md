@@ -6,6 +6,9 @@ The expanded view shows a map with informations requested from [ipinfo.com](http
 
 This widget uses the [excellent flags icon pack by lipis and contributors](https://github.com/lipis/flag-icon-css).
 
+![tooltip screenshot](screenshots/screenshot_2.png)
+![expanded screenshot](screenshots/screenshot_1.png)
+
 ## TODO
 
 1. Fix localization
