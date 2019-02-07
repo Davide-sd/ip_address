@@ -1,0 +1,27 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "sandona.davide@gmail.com",
+                "Name": "Davide Sandona'"
+            }
+        ],
+        "Category": "System Information",
+        "Description": "Show the public IP address",
+        "Description[en-GB]": "Show the public IP address",
+        "Description[it]": "Mostra l'indirizzo IP pubblico",
+        "Icon": "globe.svg",
+        "Id": "com.github.davide-sd.ip_address",
+        "License": "GPL-2.0+",
+        "Name": "Public IP Address",
+        "Name[en_GB]": "Public IP Address",
+        "Name[it]": "Indirizzo IP pubblico",
+        "ServiceTypes": [
+            "Plasma/Applet"
+        ],
+        "Version": "1.0",
+        "Website": "https://github.com/Davide-sd"
+    },
+    "X-Plasma-API": "declarativeappletscript",
+    "X-Plasma-MainScript": "ui/main.qml"
+}
