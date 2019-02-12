@@ -4,6 +4,8 @@ Plasma 5 widget for showing informations about your public IP address. This is u
 
 The expanded view shows a map with informations requested from [ipinfo.com](https://ipinfo.io/): you can copy to clipboard the different informations by clicking over them. You can also open the map on the browser.
 
+By default, the widget update itself every 5 minutes. You can change this behaviour in the settings. Please note that [ipinfo.com](https://ipinfo.io/) API limits the total amount of requests to 1000 per day: this means that the plugin will update itself at most every 2 minutes.
+
 This widget uses the [excellent flags icon pack by lipis and contributors](https://github.com/lipis/flag-icon-css).
 
 ![tooltip screenshot](screenshots/screenshot_2.png)
@@ -17,7 +19,7 @@ This widget uses the [excellent flags icon pack by lipis and contributors](https
 
 ### From openDesktop.org
 
-1. Go to **link not yet added**
+1. Go to **[Opend Desktop](https://www.opendesktop.org/p/1289644/)**
 2. Click on the Files tab
 3. Click the Install button
 
