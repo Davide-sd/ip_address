@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=Public IP Address
+Comment=Shows public ip adress
+
+Type=Service
+Icon=find-location-symbolic
+X-KDE-ServiceTypes=Plasma/Applet
+
+X-Plasma-API=declarativeappletscript
+X-Plasma-MainScript=ui/main.qml
+
+X-KDE-PluginInfo-Author=Davide Sandona
+X-KDE-PluginInfo-Email=sandona.davide@gmail.com
+X-KDE-PluginInfo-Name=com.github.davide-sd.ipaddress
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Utilities
