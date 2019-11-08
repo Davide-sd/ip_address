@@ -18,6 +18,9 @@
         <entry name="showFlagInCompact" type="Bool">
             <default>false</default>
         </entry>
+        <entry name="showIPInCompact" type="Bool">
+            <default>false</default>
+        </entry>
         <entry name="fontSize" type="int">
             <default>100</default>
         </entry>

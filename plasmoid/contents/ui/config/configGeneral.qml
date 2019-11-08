@@ -32,6 +32,7 @@ ColumnLayout {
     property alias cfg_fontSize: fontSizeSpin.value
     property alias cfg_showWidgetLabel: showWidgetLabel.checked
     property alias cfg_showFlagInCompact: showFlagInCompact.checked
+    property alias cfg_showIPInCompact: showIPInCompact.checked
 
     QtControls.GroupBox {
         Layout.fillWidth: true
@@ -88,6 +89,11 @@ ColumnLayout {
             QtControls.CheckBox {
                 id: showFlagInCompact
                 text: i18n("Display Country flag in widget icon")
+            }
+
+            QtControls.CheckBox {
+                id: showIPInCompact
+                text: i18n("Display IP address next to widget icon")
             }
         }
     }

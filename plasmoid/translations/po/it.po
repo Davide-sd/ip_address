@@ -81,6 +81,10 @@ msgstr "Visualizza il testo affianco dell'icona del widget"
 msgid "Display Country flag in widget icon"
 msgstr "Visualizza la bandiera nell'icona del widget"
 
+#: ../contents/ui/config/configGeneral.qml:96
+msgid "Display IP address next to widget icon"
+msgstr "Visualizza l'indirizzo IP affianco all'icona del widget"
+
 #: ../contents/ui/FullRepresentation.qml:99
 msgid "IP address:"
 msgstr "Indirizzo IP"

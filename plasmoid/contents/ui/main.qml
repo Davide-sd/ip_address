@@ -35,6 +35,7 @@ Item {
 	readonly property int widgetIconSize: plasmoid.configuration.widgetIconSize
 	readonly property int updateIntervalMinutes: plasmoid.configuration.updateInterval
 	readonly property bool showFlagInCompact: plasmoid.configuration.showFlagInCompact
+	readonly property bool showIPInCompact: plasmoid.configuration.showIPInCompact
 	readonly property string globe_icon_path: "../icons/globe.svg"
 
 	property real latitude: 0
@@ -173,8 +174,16 @@ Item {
 
 			QtControls.Label {
 				text: {
-					if (!showFlagInCompact) return "IP"
-					return root.jsonData.country.toUpperCase()
+					if (!showFlagInCompact) {
+						if (showIPInCompact)
+							return "IP " + root.jsonData.ip
+						return "IP"
+					}
+
+					var country = root.jsonData.country.toUpperCase()
+					if (showIPInCompact)
+						return country + " " + root.jsonData.ip
+					return country
 				}
 				height: compactRoot.height
 				fontSizeMode: isVertical ? Text.HorizontalFit : Text.FixedSize
