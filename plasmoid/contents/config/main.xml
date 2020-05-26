@@ -27,6 +27,12 @@
         <entry name="showWidgetLabel" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="showVPNIcon" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="vpnKeywords" type="String">
+            <default>vpn|tun</default>
+        </entry>
     </group>
 
     <group name="Appearance">
@@ -41,6 +47,18 @@
         </entry>
         <entry name="layoutRow" type="Bool">
             <default>true</default>
+        </entry>
+        <entry name="useLabelThemeColor" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="labelColor" type="String">
+            <default>white</default>
+        </entry>
+        <entry name="useLinkThemeColor" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="linkColor" type="String">
+            <default>cyan</default>
         </entry>
     </group>
 

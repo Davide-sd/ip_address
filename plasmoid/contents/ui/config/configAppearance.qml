@@ -17,6 +17,7 @@
 
 import QtQuick 2.0
 import QtQuick.Controls 1.0 as QtControls
+import QtQuick.Controls.Styles 1.0
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.2
 
@@ -35,6 +36,10 @@ ColumnLayout {
     property alias cfg_mapZoomLevel: mapZoomLevelSpin.value
     property alias cfg_showHostname: showHostname.checked
     property alias cfg_layoutRow: layoutRow.checked
+    property alias cfg_useLabelThemeColor: labelThemeColorCheckBox.checked
+    property alias cfg_labelColor: labelColorRectangle.color
+    property alias cfg_useLinkThemeColor: linkThemeColorCheckBox.checked
+    property alias cfg_linkColor: linkColorRectangle.color
 
     QtControls.GroupBox {
         Layout.fillWidth: true
@@ -88,10 +93,74 @@ ColumnLayout {
             QtControls.RadioButton {
                 id: layoutColumn
                 text: i18n('Use vertical layout')
-                checked: !displayOrderUp.checked
+                checked: !layoutRow.checked
                 exclusiveGroup: displayOrderGroup
             }
         }
+    }
+
+    QtControls.GroupBox {
+        Layout.fillWidth: true
+        title: i18n("Set Custom Colors")
+
+        GridLayout {
+            id: labelsContainer
+            flow: GridLayout.LeftToRight
+            columns: 2
+            Layout.minimumWidth: 300
+            Layout.maximumWidth: 300
+            Layout.preferredWidth: 300
+
+            QtControls.CheckBox {
+                id: labelThemeColorCheckBox
+                text: i18n("Use Label Theme Color")
+            }
+
+            QtControls.Button {
+                enabled: !labelThemeColorCheckBox.checked
+                onClicked: labelColorDialog.open();
+
+                Rectangle {
+                    id: labelColorRectangle
+                    x: 4
+                    y: 4
+                    width: parent.width - 8
+                    height: parent.height - 8
+                    color: cfg_labelColor
+                    border.width: 0
+                }
+            }
+
+            QtControls.CheckBox {
+                id: linkThemeColorCheckBox
+                text: i18n("Use Links Theme Color")
+            }
+
+            QtControls.Button {
+                enabled: !linkThemeColorCheckBox.checked
+                onClicked: linkColorDialog.open();
+
+                Rectangle {
+                    id: linkColorRectangle
+                    x: 4
+                    y: 4
+                    width: parent.width - 8
+                    height: parent.height - 8
+                    color: cfg_linkColor
+                    border.width: 0
+                }
+            }
+        }
+    }
+
+    ColorDialog {
+        id: labelColorDialog
+        onAccepted: cfg_labelColor = this.color
+    }
+
+    ColorDialog {
+        id: linkColorDialog
+        onAccepted: cfg_linkColor = this.color
     }
 
     QtControls.GroupBox {

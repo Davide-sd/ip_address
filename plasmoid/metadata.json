@@ -7,9 +7,9 @@
             }
         ],
         "Category": "System Information",
-        "Description": "Show the public IP address",
-        "Description[en-GB]": "Show the public IP address",
-        "Description[it]": "Mostra l'indirizzo IP pubblico",
+        "Description": "Show public IP address and VPN status",
+        "Description[en-GB]": "Show public IP address and VPN status",
+        "Description[it]": "Mostra l'indirizzo IP pubblico e lo stato VPN",
         "Icon": "globe.svg",
         "Id": "com.github.davide-sd.ip_address",
         "License": "GPL-2.0+",
@@ -19,7 +19,7 @@
         "ServiceTypes": [
             "Plasma/Applet"
         ],
-        "Version": "1.0",
+        "Version": "1.2",
         "Website": "https://github.com/Davide-sd"
     },
     "X-Plasma-API": "declarativeappletscript",

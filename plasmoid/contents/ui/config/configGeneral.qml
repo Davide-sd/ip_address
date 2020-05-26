@@ -33,10 +33,12 @@ ColumnLayout {
     property alias cfg_showWidgetLabel: showWidgetLabel.checked
     property alias cfg_showFlagInCompact: showFlagInCompact.checked
     property alias cfg_showIPInCompact: showIPInCompact.checked
+    property alias cfg_showVPNIcon: showVPNIcon.checked
+    property alias cfg_vpnKeywords: vpnKeywordsEdit.text
 
     QtControls.GroupBox {
         Layout.fillWidth: true
-        title: i18n("Widget configuration")
+        title: i18n("IP Address")
         // flat: true
 
         ColumnLayout {
@@ -94,6 +96,34 @@ ColumnLayout {
             QtControls.CheckBox {
                 id: showIPInCompact
                 text: i18n("Display IP address next to widget icon")
+            }
+        }
+    }
+
+    QtControls.GroupBox {
+        Layout.fillWidth: true
+        title: i18n("VPN Status (Experimental feature)")
+        // flat: true
+
+        ColumnLayout {
+            QtControls.Label {
+                text: i18n('Explanation for VPN status icon:\n\tRed shield icon: VPN is not active; \n\tGreen shield icon: VPN is active; \n\tOrange circle with question mark: some error happened or ambigous situation.')
+            }
+
+            QtControls.CheckBox {
+                id: showVPNIcon
+                text: i18n("Display the VPN status icon")
+            }
+
+            QtControls.Label {
+                text: i18n('Keywords used to search for active VPNs when using nmcli utility.\nUse pipe character as separator:')
+            }
+
+            QtControls.TextField {
+                id: vpnKeywordsEdit
+                width: 300
+                focus: true
+                selectByMouse: true
             }
         }
     }

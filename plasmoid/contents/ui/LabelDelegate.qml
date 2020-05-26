@@ -26,8 +26,9 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 
 QtControls.Label {
+
     id: label
-    color: theme.highlightColor
+    color: fullRoot.useLinkThemeColor ? theme.highlightColor : fullRoot.linkColor2
     font.bold: true
     Layout.fillWidth: true
     wrapMode: Text.Wrap
@@ -37,8 +38,10 @@ QtControls.Label {
         cursorShape: Qt.PointingHandCursor
         hoverEnabled: false
         onClicked: {
+            debug_print("### [MouseArea onClicked -> Copying to clipboard]")
             executable.exec("qdbus org.kde.klipper /klipper setClipboardContents " + label.text)
-            executable.exec("notify-send 'Copied " + label.text + " to clipboard'")
+            executable.exec("notify-send 'Copied " + label.text + " to clipboard' -a 'Public IP Address widget'")
+            // executable.exec("notify-send 'Copied " + label.text + " to clipboard'")
         }
     }
 }

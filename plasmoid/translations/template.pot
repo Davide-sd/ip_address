@@ -1,38 +1,37 @@
-# Translation of ip_address in en
-# Copyright (C) 2019
-# This file is distributed under the same license as the ip_address package.
+# Translation of ipaddress in LANGUAGE
+# Copyright (C) 2020
+# This file is distributed under the same license as the ipaddress package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# victorhck <victorhck@mailbox.org>, 2019.
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: ip_address \n"
+"Project-Id-Version: ipaddress \n"
 "Report-Msgid-Bugs-To: https://github.com/Davide-sd/ip_address\n"
 "POT-Creation-Date: 2020-05-26 11:00+0200\n"
-"PO-Revision-Date: 2019-02-13 18:08+0100\n"
-"Last-Translator: victorhck <victorhck@mailbox.org>\n"
-"Language-Team: Spanish <>\n"
-"Language: es_ES\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 18.12.1\n"
 
 #: ../contents/config/config.qml
 msgid "General"
-msgstr "General"
+msgstr ""
 
 #: ../contents/config/config.qml
 msgid "Appearance"
-msgstr "Aspecto"
+msgstr ""
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Map configurations"
-msgstr "Configuraciones del mapa"
+msgstr ""
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Layout"
-msgstr "Diseño"
+msgstr ""
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Set Custom Colors"
@@ -48,11 +47,11 @@ msgstr ""
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Others"
-msgstr "Otros"
+msgstr ""
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Show host name"
-msgstr "Mostrar nombre del host"
+msgstr ""
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "IP Address"
@@ -60,19 +59,19 @@ msgstr ""
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Icon size shown in the widget:"
-msgstr "Tamaño del icono mostrado en el widget:"
+msgstr ""
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Display the label alongside the widget icon"
-msgstr "Mostrar la etiqueta junto al icono del widget"
+msgstr ""
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Display Country flag in widget icon"
-msgstr "Mostrar la bandera del país en el icono del widget"
+msgstr ""
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Display IP address next to widget icon"
-msgstr "Mostrar Dirección IP junto al icono del widget"
+msgstr ""
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "VPN Status (Experimental feature)"
@@ -84,35 +83,35 @@ msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "IP address:"
-msgstr "Dirección IP:"
+msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Country:"
-msgstr "País:"
+msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Region:"
-msgstr "Región:"
+msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Postal Code:"
-msgstr "Código postal:"
+msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "City:"
-msgstr "Ciudad:"
+msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Coordinates:"
-msgstr "Coordenadas:"
+msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Hostname:"
-msgstr "Nombre del host:"
+msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Open map in the browser"
-msgstr "Abrir el mapa en el navegador"
+msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Update Infos"
@@ -120,32 +119,8 @@ msgstr ""
 
 #: ../contents/ui/main.qml
 msgid "Public IP Address: "
-msgstr "Dirección IP pública:"
+msgstr ""
 
 #: ../contents/ui/main.qml
 msgid "Connected to: "
-msgstr "Conectado a:"
-
-#~ msgid "Map Size:"
-#~ msgstr "Tamaño del mapa:"
-
-#~ msgid "Default zoom level:"
-#~ msgstr "Nivel predeterminado de zoom:"
-
-#~ msgid "Use horizontal layout"
-#~ msgstr "Utilizar diseño horizontal"
-
-#~ msgid "Use vertical layout"
-#~ msgstr "Utilizar diseño vertical"
-
-#~ msgid "Widget configuration"
-#~ msgstr "Configuración del widget"
-
-#~ msgid "Update Interval:"
-#~ msgstr "Intervalo de actualización:"
-
-#~ msgid "Widget Font size:"
-#~ msgstr "Tamaño de la fuente del widget:"
-
-#~ msgid "Public IP Address"
-#~ msgstr "Dirección IP pública"
+msgstr ""

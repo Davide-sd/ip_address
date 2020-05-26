@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Public IP Address
-Comment=Shows Public IP Adress
+Comment=Shows Public IP Adress and VPN status
 
 Type=Service
 Icon=find-location-symbolic
@@ -12,7 +12,7 @@ X-Plasma-MainScript=ui/main.qml
 X-KDE-PluginInfo-Author=Davide Sandona
 X-KDE-PluginInfo-Email=sandona.davide@gmail.com
 X-KDE-PluginInfo-Name=com.github.davide-sd.ipaddress
-X-KDE-PluginInfo-Version=1.1
+X-KDE-PluginInfo-Version=1.2
 X-KDE-PluginInfo-Category=Utilities
 X-KDE-PluginInfo-License=GPL3
 X-KDE-PluginInfo-Website=https://github.com/Davide-sd/ip_address

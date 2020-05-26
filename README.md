@@ -1,8 +1,10 @@
 # Public IP Address widget for KDE 5
 
-Plasma 5 widget for showing informations about your public IP address. This is useful for informational purposes and to monitor VPN geolocation.
+## Description
 
-The expanded view shows a map with informations requested from [ipinfo.com](https://ipinfo.io/): you can copy to clipboard the different informations by clicking over them. You can also open the map on the browser.
+Plasma 5 widget for showing informations about your public IP address and the status of your VPN (active/inactive). This is useful for informational purposes and to monitor VPN geolocation.
+
+The expanded view shows a map with informations requested from [ipinfo.com](https://ipinfo.io/): you can copy to clipboard the different informations by clicking over them. You can also open the map on the browser, and update the informations by sending another request.
 
 By default, the widget update itself every 5 minutes. You can change this behaviour in the settings. Please note that [ipinfo.com](https://ipinfo.io/) API limits the total amount of requests to 1000 per day: this means that the plugin will update itself at most every 2 minutes.
 
@@ -10,6 +12,14 @@ This widget uses the [excellent flags icon pack by lipis and contributors](https
 
 ![tooltip screenshot](screenshots/screenshot_2.png)
 ![expanded screenshot](screenshots/screenshot_1.png)
+
+## Dependencies
+
+The widgets should be able to work correctly (mostly) even if the following dependencies are not installed. Anyway, to get the best experience you need:
+
+* `libnotify-bin`: this is for showing notifications when clicking links, thus copying the link's content to the clipboard.  
+`sudo apt install libnotify-bin`
+* `nmcli`: this is part of the `network-manager` package. This is going to check the status of the VPN by executing the command `nmcli c show --active`; if a VPN is active, there should be some entry containing the keywords `vpn` or `tun`. It should already be installed in Ubuntu. Don't know about other distros (let me know in the comments or by opening an issue).
 
 ## TODO
 
@@ -43,4 +53,4 @@ In any other distribution, you must look for libraries regarding *qt5 positionin
 
 ### Can you add an option to use a different map provider other than OpenStreetMap?
 
-No, because most of other map providers require an API key, whereas OSM does not need it. This means everyone should be able to view the map.
+No, because most other map providers require an API key, whereas OSM does not need it. This means everyone should be able to view the map.

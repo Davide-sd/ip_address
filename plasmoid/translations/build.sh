@@ -1,13 +1,15 @@
 #!/bin/sh
+# Version: 5
 
 # This script will convert the *.po files to *.mo files, rebuilding the package/contents/locale folder.
 # Feature discussion: https://phabricator.kde.org/D5209
+# Eg: contents/locale/fr_CA/LC_MESSAGES/plasma_applet_org.kde.plasma.eventcalendar.mo
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-export METADATA="$DIR/../metadata.json"
-# plasmoidName=`kreadconfig5 --file="$DIR/../metadata.desktop" --group="Desktop Entry" --key="X-KDE-PluginInfo-Name"`
-plasmoidName=$(python -c "import os, json;print(json.load(open(os.environ['METADATA']))['KPlugin']['Id'])")
+DIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
+plasmoidName=`kreadconfig5 --file="$DIR/../metadata.desktop" --group="Desktop Entry" --key="X-KDE-PluginInfo-Name"`
+website=`kreadconfig5 --file="$DIR/../metadata.desktop" --group="Desktop Entry" --key="X-KDE-PluginInfo-Website"`
+bugAddress="$website"
+packageRoot=".." # Root of translatable sources
 projectName="plasma_applet_${plasmoidName}" # project name
 
 #---
@@ -26,7 +28,7 @@ fi
 #---
 echo "[build] Compiling messages"
 
-catalogs=`find po -name '*.po'`
+catalogs=`find . -name '*.po'`
 for cat in $catalogs; do
 	echo "$cat"
 	catLocale=`basename ${cat%.*}`

@@ -35,9 +35,13 @@ Item {
 	readonly property int widgetIconSize: plasmoid.configuration.widgetIconSize
 	readonly property int updateIntervalMinutes: plasmoid.configuration.updateInterval
 	readonly property bool showFlagInCompact: plasmoid.configuration.showFlagInCompact
+	readonly property bool showVPNIcon: plasmoid.configuration.showVPNIcon
 	readonly property bool showIPInCompact: plasmoid.configuration.showIPInCompact
 	readonly property string globe_icon_path: "../icons/globe.svg"
-
+	readonly property bool useLabelThemeColor: plasmoid.configuration.useLabelThemeColor
+    readonly property string labelColor: plasmoid.configuration.labelColor
+    readonly property string vpnKeywords: plasmoid.configuration.vpnKeywords
+    
 	property real latitude: 0
 	property real longitude: 0
 	property var jsonData: {}
@@ -47,11 +51,58 @@ Item {
 	property double loadingDataSinceTime: 0
 	property int loadingDataTimeoutMs: 15000
 
-	property bool debug: false
+	property bool debug: true
 
 	Plasmoid.switchWidth: units.gridUnit * 10
     Plasmoid.switchHeight: units.gridUnit * 12
 
+	// used to execute "send notification commands"
+	PlasmaCore.DataSource {
+		id: executable
+		engine: "executable"
+		connectedSources: []
+		function exec(cmd) {
+			connectSource(cmd)
+		}
+		signal exited(int exitCode, int exitStatus, string stdout, string stderr)
+    }
+
+	// used to execute query commands for vpn checks
+	PlasmaCore.DataSource {
+		id: executable_vpn
+		engine: "executable"
+		connectedSources: []
+		function exec(cmd) {
+			connectSource(cmd)
+		}
+		onNewData: {
+			var exitCode = data["exit code"]
+			var exitStatus = data["exit status"]
+			var stdout = data["stdout"]
+			var stderr = data["stderr"]
+			debug_print("### [executable onNewData] exitCode: " + exitCode)
+			debug_print("### [executable onNewData] exitStatus: " + exitStatus)
+			debug_print("### [executable onNewData] stdout: " + stdout)
+			debug_print("### [executable onNewData] stderr: " + stderr)
+			exited(exitCode, exitStatus, stdout, stderr)
+			disconnectSource(sourceName) // cmd finished
+
+			if (vpnKeywords !== ""){
+				if (stdout === "")
+					vpn_svg.imagePath = Qt.resolvedUrl("../icons/vpn-shield-off.svg")
+				else
+					vpn_svg.imagePath = Qt.resolvedUrl("../icons/vpn-shield-on.svg")
+				
+				if (stderr !== "")
+					vpn_svg.imagePath = Qt.resolvedUrl("../icons/question-mark.svg")
+			}
+			else
+				vpn_svg.imagePath = Qt.resolvedUrl("../icons/question-mark.svg")
+		}
+		signal exited(int exitCode, int exitStatus, string stdout, string stderr)
+    }
+
+	// used to send a request to ip-info
 	Timer {
 		id: timer
 		interval: updateIntervalMinutes * 60 * 1000
@@ -63,6 +114,24 @@ Item {
 			reloadData()
 			abortTooLongConnection()
 		}
+	}
+
+	// used to check if the vpn is up/down
+	Timer {
+		id: timer_vpn
+		interval: 1000
+		running: showVPNIcon
+		repeat: true
+		triggeredOnStart: true
+		onTriggered: {
+			executable_vpn.exec("nmcli c show --active | grep -E '" + vpnKeywords + "'")
+			debug_print("### [Timer_VPN onTriggered] vpnKeywords: " + vpnKeywords)
+		}
+	}
+
+	PlasmaCore.Svg {
+		id: vpn_svg
+		imagePath: Qt.resolvedUrl("../icons/vpn-shield-off.svg")
 	}
 
 	function successCallback(jsonData) {
@@ -173,6 +242,7 @@ Item {
 			}
 
 			QtControls.Label {
+				color: useLabelThemeColor ? theme.textColor : labelColor
 				text: {
 					if (!showFlagInCompact) {
 						if (showIPInCompact)
@@ -195,6 +265,18 @@ Item {
                 }
                 minimumPointSize: theme.smallestFont.pointSize
 				visible: showWidgetLabel
+			}
+
+			PlasmaCore.SvgItem {
+				id: vpn_icon
+				Layout.minimumWidth: units.iconSizes.tiny
+                Layout.minimumHeight: units.iconSizes.tiny
+                Layout.maximumWidth: units.iconSizes.enormous
+                Layout.maximumHeight: units.iconSizes.enormous
+                Layout.preferredWidth: ExternalJS.getIconSize(widgetIconSize, compactRoot)
+                Layout.preferredHeight: Layout.preferredWidth
+				visible: showVPNIcon
+				svg: vpn_svg
 			}
 		}
 
