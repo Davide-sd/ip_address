@@ -15,44 +15,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-/*
-TODO:
-1. Custom Colors for text and links
-    DONE, TESTED
-2. Ip v6
-3. Set a default value for what an IP address should be. Set a red
-    icon if the actual IP is different from the default. Should we 
-    send a notification too?
-4. Button in the tooltip to send a new request to ip-info... An update
-    button.
-    DONE, UNTESTED. 
-5. Update option in the context menu (right click menu)
-    DONE, UNTESTED. 
-6. After loading the widgets, go to settings -> Check "Show Hostname"
-    -> Click OK -> The plugin freeze, no errors, no messages... WTF?
-
-7. Notification when cliccking over an info and copying it into clipboard
-    DONE, TESTED.
-8. Add marker to the map when opening it on the browser
-    DONE, TESTED.
-9. Center the map when opening full representation
-10. Add Marker to the center of the minimap
-    DONE, PARTIALLY TESTED
-11. Look for 'vpn' or 'tun' in the output of command nmcli c show --active, 
-    verify that VPN is up.
-    nmcli c show --active | grep -E "vpn|tun"
-    DONE, partially tested
-
-Dependencies:
-    libnotify-bin: this is for showing notifications when clicking links, thus copying
-        the content of the link to the clipboard.
-        sudo apt install libnotify-bin
-    
-    nmcli: this is part of the network-manager package. It should already be
-    installed in Ubuntu. Don't know about other distros (let me know in the comments).
-
-*/
-
 import QtQuick 2.2
 import QtQuick.Controls 1.1 as QtControls
 import QtQuick.Layouts 1.1
@@ -87,13 +49,6 @@ Item {
     // property string mapLink: "https://www.openstreetmap.org/#map=" + mapZoomLevel + "/" + latitude + "/" + longitude
     property string mapLink: "https://www.openstreetmap.org/?mlat=" + latitude + "&mlon=" + longitude + "#map=" + mapZoomLevel + "/" + latitude + "/" + longitude
 
-    function action_Update() {
-        debug_print("### [action_Update]")
-        reloadData()
-        abortTooLongConnection()
-        executable.exec("notify-send 'Done'")
-    }
-
     function addMarker(latitude, longitude) {
         debug_print("### addMarker init")
         var component = Qt.createComponent("Marker.qml")
@@ -112,19 +67,7 @@ Item {
         my_map.addMapItem(item)
         debug_print("### Added Marker: lat=" + latitude + "; long=" + longitude)
     }
-
-    Component.onCompleted: {
-        debug_print("### [Component.onCompleted -> calling Update action")
-        // init contextMenu
-        // action_Update()
-        plasmoid.setAction('Update', i18n('Update Infos'), 'reload')
-        debug_print("### [Component.onCompleted -> added Update action")
-        plasmoid.setActionSeparator("My Separato")
-        debug_print("### [Component.onCompleted -> added Separator")
-    }
-
     
-
     GridLayout {
         id: grid
         rowSpacing: 10
@@ -153,10 +96,7 @@ Item {
             Map {
                 id: my_map
                 anchors.fill: parent
-                // width: mapSize
-                // height: width
                 plugin: mapPlugin
-                // center: jsonData !== undefined ? QtPositioning.coordinate(latitude, longitude) : QtPositioning.coordinate(41.8902, 12.4922) // Rome
                 center: {
                     if (jsonData !== undefined) {
                         addMarker(latitude, longitude)
@@ -166,9 +106,6 @@ Item {
                     returnQtPositioning.coordinate(41.8902, 12.4922) // Rome
                 }
                 zoomLevel: mapZoomLevel
-
-                // Component.onCompleted: addMarker(41.8902, 12.4922)
-                // Component.onCompleted: jsonData !== undefined ? addMarker(latitude, longitude) : addMarker(41.8902, 12.4922) // Rome
             }
         }
 
@@ -270,7 +207,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 // anchors.horizontalCenter: parent.horizontalCenter
                 Layout.preferredWidth: parent.width
-                text: i18n("Update Infos")
+                text: i18n("Update")
                 onClicked: {
                     debug_print("### ['Update Infos' onClicked]")
                     reloadData()

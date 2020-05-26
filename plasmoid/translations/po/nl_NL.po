@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ip_address\n"
 "Report-Msgid-Bugs-To: https://github.com/Davide-sd/ip_address\n"
-"POT-Creation-Date: 2020-05-26 11:00+0200\n"
+"POT-Creation-Date: 2020-05-26 11:57+0200\n"
 "PO-Revision-Date: 2019-02-12 14:07+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
@@ -115,7 +115,7 @@ msgid "Open map in the browser"
 msgstr "Kaart openen in webbrowser"
 
 #: ../contents/ui/FullRepresentation.qml
-msgid "Update Infos"
+msgid "Update"
 msgstr ""
 
 #: ../contents/ui/main.qml

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ip_address \n"
 "Report-Msgid-Bugs-To: https://github.com/Davide-sd/ip_address\n"
-"POT-Creation-Date: 2020-05-26 11:00+0200\n"
+"POT-Creation-Date: 2020-05-26 11:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -114,7 +114,7 @@ msgid "Open map in the browser"
 msgstr "Apri la mappa nel browser"
 
 #: ../contents/ui/FullRepresentation.qml
-msgid "Update Infos"
+msgid "Update"
 msgstr "Aggiorna"
 
 #: ../contents/ui/main.qml
@@ -124,6 +124,9 @@ msgstr "Indirizzo IP Pubblico:"
 #: ../contents/ui/main.qml
 msgid "Connected to: "
 msgstr "Connesso in:"
+
+#~ msgid "Update Infos"
+#~ msgstr "Aggiorna"
 
 #~ msgid "Map Size:"
 #~ msgstr "Dimensioni della Mappa"

@@ -8,22 +8,20 @@ The expanded view shows a map with informations requested from [ipinfo.com](http
 
 By default, the widget update itself every 5 minutes. You can change this behaviour in the settings. Please note that [ipinfo.com](https://ipinfo.io/) API limits the total amount of requests to 1000 per day: this means that the plugin will update itself at most every 2 minutes.
 
+You can change the colors of the displayed informations in the settings.
+
 This widget uses the [excellent flags icon pack by lipis and contributors](https://github.com/lipis/flag-icon-css).
 
-![tooltip screenshot](screenshots/screenshot_2.png)
-![expanded screenshot](screenshots/screenshot_1.png)
+![tooltip screenshot](screenshots/screenshot_4.png)
+![expanded screenshot](screenshots/screenshot_3.png)
 
 ## Dependencies
 
-The widgets should be able to work correctly (mostly) even if the following dependencies are not installed. Anyway, to get the best experience you need:
+The primary functions of the widget (check IP address) should work correctly even if the following dependencies are not installed. Anyway, to get the best experience you need:
 
 * `libnotify-bin`: this is for showing notifications when clicking links, thus copying the link's content to the clipboard.  
 `sudo apt install libnotify-bin`
-* `nmcli`: this is part of the `network-manager` package. This is going to check the status of the VPN by executing the command `nmcli c show --active`; if a VPN is active, there should be some entry containing the keywords `vpn` or `tun`. It should already be installed in Ubuntu. Don't know about other distros (let me know in the comments or by opening an issue).
-
-## TODO
-
-1. Fix localization
+* `nmcli`: this is part of the `network-manager` package. It'll check the status of the VPN by executing the command `nmcli c show --active`; if a VPN is active, there should be some entries containing the keywords `vpn` or `tun`. It should already be installed in Ubuntu. Don't know about other distros (let me know in the comments or by opening an issue).
 
 ## Installation
 
@@ -38,8 +36,8 @@ The widgets should be able to work correctly (mostly) even if the following depe
 1. If your widgets are locked, right-click the desktop and select `Unlock Widgets`
 2. Right-click the desktop and select `Add Widgets...`
 3. Click the `Get new widgets` button in the Widget Explorer that just opened
-4. Type `Shutdown or Switch` into the search field
-5. Click the `Install` button next to `Shutdown or Switch`
+4. Type `Public IP Address` into the search field
+5. Click the `Install` button next to `Public IP Address`
 
 ## FAQ
 

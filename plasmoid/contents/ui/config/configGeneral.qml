@@ -107,7 +107,9 @@ ColumnLayout {
 
         ColumnLayout {
             QtControls.Label {
-                text: i18n('Explanation for VPN status icon:\n\tRed shield icon: VPN is not active; \n\tGreen shield icon: VPN is active; \n\tOrange circle with question mark: some error happened or ambigous situation.')
+                textFormat: Text.RichText
+                // text: i18n('Explanation for VPN status icon:\n\tRed shield icon: VPN is not active; \n\tGreen shield icon: VPN is active; \n\tOrange circle with question mark: some error happened or ambigous situation.')
+                text: i18n('Explanation for VPN status icon:\n<ul><li><b>Red shield</b> icon: VPN is not active;</li><li><b>Green shield</b> icon: VPN is active;</li><li><b>Orange disk with question mark</b>: some error happened or ambigous situation.</li></ul>')
             }
 
             QtControls.CheckBox {
@@ -116,7 +118,7 @@ ColumnLayout {
             }
 
             QtControls.Label {
-                text: i18n('Keywords used to search for active VPNs when using nmcli utility.\nUse pipe character as separator:')
+                text: i18n('Keywords used to search for active VPNs when using nmcli utility (use pipe character as separator):')
             }
 
             QtControls.TextField {

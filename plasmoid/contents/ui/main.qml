@@ -15,6 +15,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
+/*
+TODO:
+1. After loading the widgets, go to settings -> Check "Show Hostname"
+    -> Click OK -> The plugin freeze, no errors, no messages... WTF?
+2. Center the map when opening full representation. As of now, if you scroll
+	and move the minimap, then close the full representation, then reopen it,
+	the map will be centered on the last known position, not in the marker
+3. Apparently it is possible to get the IP address using a DataSource with
+	engine "geolocation": https://www.dennogumi.org/2014/01/an-expedition-in-the-qml-realm/
+	Verify how many informations it is possible to retrieve with that approach,
+	or if its better to stick with the one already developed.
+*/
+
 import QtQuick 2.2
 import QtQuick.Controls 1.1 as QtControls
 import QtQuick.Layouts 1.1
@@ -51,7 +64,7 @@ Item {
 	property double loadingDataSinceTime: 0
 	property int loadingDataTimeoutMs: 15000
 
-	property bool debug: true
+	property bool debug: false
 
 	Plasmoid.switchWidth: units.gridUnit * 10
     Plasmoid.switchHeight: units.gridUnit * 12
@@ -133,6 +146,23 @@ Item {
 		id: vpn_svg
 		imagePath: Qt.resolvedUrl("../icons/vpn-shield-off.svg")
 	}
+
+	// function action_Update() {
+    //     debug_print("### [action_Update]")
+    //     reloadData()
+    //     abortTooLongConnection()
+    //     executable.exec("notify-send 'Done'")
+    // }
+
+	// Component.onCompleted: {
+    //     debug_print("### [Component.onCompleted -> calling Update action")
+    //     // init contextMenu
+    //     // action_Update()
+    //     plasmoid.setAction('Update', i18n('Update Infos'), 'reload')
+    //     debug_print("### [Component.onCompleted -> added Update action")
+    //     plasmoid.setActionSeparator("My Separato")
+    //     debug_print("### [Component.onCompleted -> added Separator")
+    // }
 
 	function successCallback(jsonData) {
 		root.loadingData = false
