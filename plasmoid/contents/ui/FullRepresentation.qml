@@ -209,9 +209,9 @@ Item {
                 Layout.preferredWidth: parent.width
                 text: i18n("Update")
                 onClicked: {
-                    debug_print("### ['Update Infos' onClicked]")
-                    reloadData()
-                    abortTooLongConnection()
+                    debug_print("### [Update onClicked]")
+                    root.reloadData()
+                    // abortTooLongConnection()
                 }
             }
         }

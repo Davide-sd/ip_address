@@ -19,7 +19,7 @@
         "ServiceTypes": [
             "Plasma/Applet"
         ],
-        "Version": "1.2",
+        "Version": "1.2.6",
         "Website": "https://github.com/Davide-sd"
     },
     "X-Plasma-API": "declarativeappletscript",

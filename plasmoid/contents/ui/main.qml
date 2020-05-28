@@ -22,10 +22,6 @@ TODO:
 2. Center the map when opening full representation. As of now, if you scroll
 	and move the minimap, then close the full representation, then reopen it,
 	the map will be centered on the last known position, not in the marker
-3. Apparently it is possible to get the IP address using a DataSource with
-	engine "geolocation": https://www.dennogumi.org/2014/01/an-expedition-in-the-qml-realm/
-	Verify how many informations it is possible to retrieve with that approach,
-	or if its better to stick with the one already developed.
 */
 
 import QtQuick 2.2
@@ -60,14 +56,36 @@ Item {
 	property var jsonData: {}
 
 	property var request: null
-	property bool loadingData: false
-	property double loadingDataSinceTime: 0
-	property int loadingDataTimeoutMs: 15000
+	property string prevVPNstatus: "unknown"
+	property string curVPNstatus: "unknown"
 
-	property bool debug: false
+	property int countSeconds: 1
+	property bool runTimer: true
+
+	property bool debug: true
 
 	Plasmoid.switchWidth: units.gridUnit * 10
     Plasmoid.switchHeight: units.gridUnit * 12
+
+
+	// // NOTE: can't use this approach because it doesn't update the values when
+	// // a vpn change is detected. Why? who knows?!?!?
+	// PlasmaCore.DataSource {
+    //     id: geoDataSource
+    //     dataEngine: "geolocation"
+    //     connectedSources: ['location']
+    //     interval: 1000
+
+    //     onNewData: {
+	// 		debug_print("### [geoDataSource.onNewData] " + sourceName)
+    //         if (sourceName == 'location') {
+    //             // ipAddr.text = data.ip
+	// 			debug_print("### \t[geoDataSource.onNewData] " + countSeconds)
+	// 			debug_print(JSON.stringify(data, null, 4))
+	// 			countSeconds++
+    //         }
+    //     }
+	// }
 
 	// used to execute "send notification commands"
 	PlasmaCore.DataSource {
@@ -93,24 +111,34 @@ Item {
 			var exitStatus = data["exit status"]
 			var stdout = data["stdout"]
 			var stderr = data["stderr"]
-			debug_print("### [executable onNewData] exitCode: " + exitCode)
-			debug_print("### [executable onNewData] exitStatus: " + exitStatus)
-			debug_print("### [executable onNewData] stdout: " + stdout)
-			debug_print("### [executable onNewData] stderr: " + stderr)
+			// debug_print("### [executable onNewData] exitCode: " + exitCode)
+			// debug_print("### [executable onNewData] exitStatus: " + exitStatus)
+			// debug_print("### [executable onNewData] stdout: " + stdout)
+			// debug_print("### [executable onNewData] stderr: " + stderr)
+
+			prevVPNstatus = curVPNstatus
+			if (vpnKeywords !== ""){
+				if (stdout === "") {
+					vpn_svg.imagePath = Qt.resolvedUrl("../icons/vpn-shield-off.svg")
+					curVPNstatus = "inactive"
+				}
+				else {
+					vpn_svg.imagePath = Qt.resolvedUrl("../icons/vpn-shield-on.svg")
+					curVPNstatus = "active"
+				}
+				
+				if (stderr !== "") {
+					vpn_svg.imagePath = Qt.resolvedUrl("../icons/question-mark.svg")
+					curVPNstatus = "unknown"
+				}
+			}
+			else {
+				vpn_svg.imagePath = Qt.resolvedUrl("../icons/question-mark.svg")
+				curVPNstatus = "unknown"
+			}
+
 			exited(exitCode, exitStatus, stdout, stderr)
 			disconnectSource(sourceName) // cmd finished
-
-			if (vpnKeywords !== ""){
-				if (stdout === "")
-					vpn_svg.imagePath = Qt.resolvedUrl("../icons/vpn-shield-off.svg")
-				else
-					vpn_svg.imagePath = Qt.resolvedUrl("../icons/vpn-shield-on.svg")
-				
-				if (stderr !== "")
-					vpn_svg.imagePath = Qt.resolvedUrl("../icons/question-mark.svg")
-			}
-			else
-				vpn_svg.imagePath = Qt.resolvedUrl("../icons/question-mark.svg")
 		}
 		signal exited(int exitCode, int exitStatus, string stdout, string stderr)
     }
@@ -123,9 +151,9 @@ Item {
 		repeat: true
 		triggeredOnStart: true
 		onTriggered: {
-			debug_print("### [Timer onTriggered]")
+			debug_print("### [Timer IP Address onTriggered]")
 			reloadData()
-			abortTooLongConnection()
+			runTimer = false
 		}
 	}
 
@@ -134,11 +162,17 @@ Item {
 		id: timer_vpn
 		interval: 1000
 		running: showVPNIcon
+		// running: true
 		repeat: true
 		triggeredOnStart: true
 		onTriggered: {
+			debug_print("### [timer_vpn.onTriggered] vpnKeywords: " + vpnKeywords)
 			executable_vpn.exec("nmcli c show --active | grep -E '" + vpnKeywords + "'")
-			debug_print("### [Timer_VPN onTriggered] vpnKeywords: " + vpnKeywords)
+
+			if (prevVPNstatus != curVPNstatus) {
+				debug_print("### [timer_vpn.onTriggered] detected change, sending request")
+				setTimeout(reloadData(), 1000)
+			}
 		}
 	}
 
@@ -147,37 +181,64 @@ Item {
 		imagePath: Qt.resolvedUrl("../icons/vpn-shield-off.svg")
 	}
 
-	// function action_Update() {
-    //     debug_print("### [action_Update]")
-    //     reloadData()
-    //     abortTooLongConnection()
-    //     executable.exec("notify-send 'Done'")
-    // }
+	function getIPdata(successCallback, failureCallback) {
+		// append /json to the end to force json data response
+		var getUrl = "https://ipinfo.io/json"
+		debug_print("### [getIPdata] attempting request")
 
-	// Component.onCompleted: {
-    //     debug_print("### [Component.onCompleted -> calling Update action")
-    //     // init contextMenu
-    //     // action_Update()
-    //     plasmoid.setAction('Update', i18n('Update Infos'), 'reload')
-    //     debug_print("### [Component.onCompleted -> added Update action")
-    //     plasmoid.setActionSeparator("My Separato")
-    //     debug_print("### [Component.onCompleted -> added Separator")
-    // }
+		try {
+			var request = new XMLHttpRequest()
+			request.open('GET', getUrl)
+
+			// QML XMLHttpRequest doesn't have ontimeout. Need to create a 
+			// custom timer to simulate it.
+			var myTimeoutTimer = Qt.createQmlObject("import QtQuick 2.2; Timer {interval: 5000; repeat: false; running: true;}",root,"MyTimeoutTimer");
+			myTimeoutTimer.triggered.connect(function(){
+				debug_print("### [getIPdata] request TIMEOUT")
+				request.responseText = "Timeout reached"
+				request.abort()
+				// often, just after a vpn change has been detected, the first 
+				// requests are going to timeout. Keep sending them until one
+				// is successful.
+				// TODO: is there any better approach???
+				getIPdata(successCallback, failureCallback)
+			});
+			
+			request.onreadystatechange = function () {
+				if (request.readyState !== XMLHttpRequest.DONE) {
+					return
+				}
+
+				if (request.status !== 200) {
+					failureCallback(request)
+					return
+				}
+
+				var jsonData = JSON.parse(request.responseText)
+				// remember to stop the timeout timer
+				myTimeoutTimer.running = false
+				successCallback(jsonData)
+			}
+
+			request.send()
+			return request
+		}
+		catch (err) {
+			debug_print("### [getIPdata] Error" + JSON.stringify(err, null, 4))
+			return null
+		}
+	}
 
 	function successCallback(jsonData) {
-		root.loadingData = false
 		root.jsonData = jsonData
 		var coords = jsonData.loc.split(",")
 		root.latitude = parseFloat(coords[0])
 		root.longitude = parseFloat(coords[1])
-		debug_print("### [successCallback]: " + jsonData)
+		debug_print("### [successCallback]: " + JSON.stringify(jsonData, null, 4))
 	}
 
 	function failureCallback(request) {
-		root.loadingData = false
-		debug_print("### [failureCallback]:")
-		console.log('ERROR - status: ' + request.status)
-		console.log('ERROR - responseText: ' + request.responseText)
+		debug_print("### [failureCallback] request.status: " + request.status + "; request.responseText: " + request.responseText)
 	}
 
 	function debug_print(msg) {
@@ -186,31 +247,8 @@ Item {
 	}
 
 	function reloadData() {
-		if (loadingData) {
-			debug_print("### [reloadData]: Still loading data")
-			return
-		}
-
-		var now = (new Date()).getTime()
-
-		loadingDataSinceTime = now
-		loadingData = true
-		root.request = ExternalJS.getIPdata(successCallback, failureCallback)
-	}
-
-	function abortTooLongConnection() {
-		if (loadingData) {
-			debug_print("### [abortTooLongConnection]: Still loading data")
-			return
-		}
-
-		var now = (new Date()).getTime()
-		debug_print("### [abortTooLongConnection]: loadingDataSinceTime: " + loadingDataSinceTime + " - loadingDataTimeoutMs: " + loadingDataTimeoutMs + " - now: " + now)
-		if (loadingDataSinceTime + loadingDataTimeoutMs < nowTime) {
-			debug_print("### [abortTooLongConnection]: Time out reached. Aborting request.")
-			request.abort()
-			loadingData = false
-		}
+		debug_print("### [reloadData] Sending request")
+		root.request = getIPdata(successCallback, failureCallback)
 	}
 
 	function getIconPath(isToolTipArea) {

@@ -10,16 +10,16 @@
             <default>true</default>
         </entry>
         <entry name="updateInterval" type="int">
-            <default>5</default>
+            <default>2</default>
         </entry>
         <entry name="widgetIconSize" type="int">
             <default>0</default>
         </entry>
         <entry name="showFlagInCompact" type="Bool">
-            <default>false</default>
+            <default>true</default>
         </entry>
         <entry name="showIPInCompact" type="Bool">
-            <default>false</default>
+            <default>true</default>
         </entry>
         <entry name="fontSize" type="int">
             <default>100</default>
@@ -28,7 +28,7 @@
             <default>true</default>
         </entry>
         <entry name="showVPNIcon" type="Bool">
-            <default>false</default>
+            <default>true</default>
         </entry>
         <entry name="vpnKeywords" type="String">
             <default>vpn|tun</default>
