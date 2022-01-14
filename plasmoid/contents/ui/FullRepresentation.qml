@@ -78,7 +78,7 @@ Item {
             width: mapSize
             height: width
             // // Fix issue https://github.com/Davide-sd/ip_address/issues/8
-            Layout.alignment: layoutRow ? undefined : Qt.AlignHCenter
+            Layout.alignment: layoutRow ? Qt.AlignLeft : Qt.AlignHCenter
             // anchors.horizontalCenter: layoutRow ? undefined : parent.horizontalCenter
 
             Plugin {
@@ -103,7 +103,7 @@ Item {
                         return QtPositioning.coordinate(latitude, longitude)
                     }
                     addMarker(41.8902, 12.4922)
-                    returnQtPositioning.coordinate(41.8902, 12.4922) // Rome
+                    return QtPositioning.coordinate(41.8902, 12.4922) // Rome
                 }
                 zoomLevel: mapZoomLevel
             }
@@ -123,7 +123,7 @@ Item {
             }
 
             LabelDelegate {
-                text: jsonData !== undefined ? jsonData.ip : "N/A"
+                text: jsonData !== undefined && jsonData.ip ? jsonData.ip : "N/A"
             }
 
             QtControls.Label {
@@ -132,7 +132,7 @@ Item {
             }
 
             LabelDelegate {
-                text: jsonData !== undefined ? jsonData.country : "N/A"
+                text: jsonData !== undefined && jsonData.country ? jsonData.country : "N/A"
             }
 
             QtControls.Label {
@@ -141,7 +141,7 @@ Item {
             }
 
             LabelDelegate {
-                text: jsonData !== undefined ? jsonData.region : "N/A"
+                text: jsonData !== undefined && jsonData.region ? jsonData.region : "N/A"
             }
 
             QtControls.Label {
@@ -150,7 +150,7 @@ Item {
             }
 
             LabelDelegate {
-                text: jsonData !== undefined ? jsonData.postal : "N/A"
+                text: jsonData !== undefined && jsonData.postal ? jsonData.postal : "N/A"
             }
 
             QtControls.Label {
@@ -159,7 +159,7 @@ Item {
             }
 
             LabelDelegate {
-                text: jsonData !== undefined ? jsonData.city : "N/A"
+                text: jsonData !== undefined && jsonData.city ? jsonData.city : "N/A"
             }
 
             QtControls.Label {
@@ -168,7 +168,7 @@ Item {
             }
 
             LabelDelegate {
-                text: jsonData !== undefined ? jsonData.loc : "N/A"
+                text: jsonData !== undefined && jsonData.loc ? jsonData.loc : "N/A"
             }
 
             QtControls.Label {
@@ -178,7 +178,7 @@ Item {
             }
 
             LabelDelegate {
-                text: jsonData !== undefined ? jsonData.hostname : "N/A"
+                text: jsonData !== undefined && jsonData.hostname ? jsonData.hostname : "N/A"
                 visible: showHostname
             }
 
