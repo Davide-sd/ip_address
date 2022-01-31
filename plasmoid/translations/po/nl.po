@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: ip_address\n"
 "Report-Msgid-Bugs-To: https://github.com/Davide-sd/ip_address\n"
 "POT-Creation-Date: 2020-05-26 11:57+0200\n"
-"PO-Revision-Date: 2019-02-12 14:07+0100\n"
-"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+"PO-Revision-Date: 2021-06-09 21:14+0200\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 3.0\n"
 
 #: ../contents/config/config.qml
 msgid "General"
@@ -24,7 +24,7 @@ msgstr "Algemeen"
 
 #: ../contents/config/config.qml
 msgid "Appearance"
-msgstr "Uiterlijk"
+msgstr "Vormgeving"
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Map configurations"
@@ -36,15 +36,15 @@ msgstr "Indeling"
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Set Custom Colors"
-msgstr ""
+msgstr "Eigen kleuren gebruiken"
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Use Label Theme Color"
-msgstr ""
+msgstr "Labelkleur van thema gebruiken"
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Use Links Theme Color"
-msgstr ""
+msgstr "Linkkleur van thema gebruiken"
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Others"
@@ -56,7 +56,7 @@ msgstr "Hostnaam tonen"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "IP Address"
-msgstr ""
+msgstr "IP-adres"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Icon size shown in the widget:"
@@ -68,19 +68,19 @@ msgstr "Label tonen naast het widgetpictogram"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Display Country flag in widget icon"
-msgstr "Landsvlag tonen in widgetpictogram"
+msgstr "Landsvlag tonen op widgetpictogram"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Display IP address next to widget icon"
-msgstr "Mostrar IP-adres naast het widgetpictogram"
+msgstr "IP-adres tonen naast het widgetpictogram"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "VPN Status (Experimental feature)"
-msgstr ""
+msgstr "VPN-status (experimentele functie)"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Display the VPN status icon"
-msgstr ""
+msgstr "VPN-statuspictogram tonen"
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "IP address:"
@@ -116,11 +116,11 @@ msgstr "Kaart openen in webbrowser"
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Update"
-msgstr ""
+msgstr "Bijwerken"
 
 #: ../contents/ui/main.qml
 msgid "Public IP Address: "
-msgstr "Openbaar IP-adres: "
+msgstr "Openbaar ip-adres: "
 
 #: ../contents/ui/main.qml
 msgid "Connected to: "
