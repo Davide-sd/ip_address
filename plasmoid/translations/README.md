@@ -28,4 +28,5 @@ Go to `~/.local/share/plasma/plasmoids/com.github.davide-sd.ip_address/translate
 | Template |      27 |       |
 | en       |   27/27 |  100% |
 | it       |   27/27 |  100% |
-| nl_NL | 27/27 | 100% |
+| nl_NL    |   27/27 |  100% |
+| pl       |   27/27 |  100% |
