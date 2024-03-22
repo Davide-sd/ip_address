@@ -48,20 +48,18 @@ function getIPdata(successCallback, failureCallback) {
 function getIconSize(iconSize, compactRoot) {
     switch(iconSize) {
         case 1:
-            return units.iconSizes.tiny
+            return Kirigami.Units.iconSizes.small
         case 2:
-            return units.iconSizes.small
+            return Kirigami.Units.iconSizes.smallMedium
         case 3:
-            return units.iconSizes.smallMedium
+            return Kirigami.Units.iconSizes.medium
         case 4:
-            return units.iconSizes.medium
+            return Kirigami.Units.iconSizes.large
         case 5:
-            return units.iconSizes.large
+            return Kirigami.Units.iconSizes.huge
         case 6:
-            return units.iconSizes.huge
-        case 7:
-            return units.iconSizes.enormous
+            return Kirigami.Units.iconSizes.enormous
         default:
-            return typeof(compactRoot) === "undefined" ? units.iconSizes.medium : compactRoot.height
+            return typeof(compactRoot) === "undefined" ? Kirigami.Units.iconSizes.medium : compactRoot.height
     }
 }

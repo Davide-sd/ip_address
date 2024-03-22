@@ -16,17 +16,16 @@
  */
 
 import QtQuick 2.2
-import QtQuick.Controls 1.1 as QtControls
-import QtQuick.Layouts 1.1
-import QtQuick.Window 2.1
+import QtQuick.Controls as QtControls
+import QtQuick.Layouts
 
-import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
-import org.kde.plasma.extras 2.0 as PlasmaExtras
+import org.kde.kirigami as Kirigami
+import org.kde.plasma.plasmoid
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.components as PlasmaComponents
 
-import QtLocation 5.9
-import QtPositioning 5.9
+import QtLocation
+import QtPositioning
 
 import "js/index.js" as ExternalJS
 
@@ -37,25 +36,25 @@ Item {
     Layout.preferredWidth: grid.width
     Layout.preferredHeight: grid.height
 
-    readonly property bool layoutRow: plasmoid.configuration.layoutRow
-    readonly property bool showHostname: plasmoid.configuration.showHostname
-    readonly property int mapSize: plasmoid.configuration.mapSize
-    readonly property int mapZoomLevel: plasmoid.configuration.mapZoomLevel
-    readonly property bool useLabelThemeColor: plasmoid.configuration.useLabelThemeColor
-    readonly property string labelColor: plasmoid.configuration.labelColor
-    readonly property bool useLinkThemeColor: plasmoid.configuration.useLinkThemeColor
-    readonly property string linkColor: plasmoid.configuration.linkColor
+    readonly property bool layoutRow: Plasmoid.configuration.layoutRow
+    readonly property bool showHostname: Plasmoid.configuration.showHostname
+    readonly property int mapSize: Plasmoid.configuration.mapSize
+    readonly property int mapZoomLevel: Plasmoid.configuration.mapZoomLevel
+    readonly property bool useLabelThemeColor: Plasmoid.configuration.useLabelThemeColor
+    readonly property string labelColor: Plasmoid.configuration.labelColor
+    readonly property bool useLinkThemeColor: Plasmoid.configuration.useLinkThemeColor
+    readonly property string linkColor: Plasmoid.configuration.linkColor
 
     // property string mapLink: "https://www.openstreetmap.org/#map=" + mapZoomLevel + "/" + latitude + "/" + longitude
     property string mapLink: "https://www.openstreetmap.org/?mlat=" + latitude + "&mlon=" + longitude + "#map=" + mapZoomLevel + "/" + latitude + "/" + longitude
 
     function addMarker(latitude, longitude) {
-        debug_print("### addMarker init")
+        debug_print("addMarker init")
         var component = Qt.createComponent("Marker.qml")
         if( component.status != Component.Ready )
         {
             if( component.status == Component.Error )
-                debug_print("### Error creating Marker:"+ component.errorString() );
+                debug_print("Error creating Marker:"+ component.errorString() );
             return; // or maybe throw
         }
         // removing previous markers
@@ -65,7 +64,7 @@ Item {
                             coordinate: QtPositioning.coordinate(latitude, longitude)
                         })
         my_map.addMapItem(item)
-        debug_print("### Added Marker: lat=" + latitude + "; long=" + longitude)
+        debug_print("Added Marker: lat=" + latitude + "; long=" + longitude)
     }
     
     GridLayout {
@@ -77,20 +76,11 @@ Item {
         Item {
             width: mapSize
             height: width
-            // // Fix issue https://github.com/Davide-sd/ip_address/issues/8
             Layout.alignment: layoutRow ? Qt.AlignLeft : Qt.AlignHCenter
-            // anchors.horizontalCenter: layoutRow ? undefined : parent.horizontalCenter
 
             Plugin {
                 id: mapPlugin
                 name: "osm" // "mapboxgl", "esri", ...
-                // locales: ["it_IT","en_US"]
-
-                // PluginParameter { name: "osm.useragent"; value: "My great Qt OSM application" }
-                // PluginParameter { name: "osm.mapping.host"; value: "http://osm.tile.server.address/" }
-                // PluginParameter { name: "osm.mapping.copyright"; value: "All mine" }
-                // PluginParameter { name: "osm.routing.host"; value: "http://osrm.server.address/viaroute" }
-                // PluginParameter { name: "osm.geocoding.host"; value: "http://geocoding.server.address" }
             }
 
             Map {
@@ -119,7 +109,7 @@ Item {
 
             QtControls.Label {
                 text: i18n("IP address:")
-                color: useLabelThemeColor ? theme.textColor : labelColor
+                color: useLabelThemeColor ? Kirigami.Theme.textColor : labelColor
             }
 
             LabelDelegate {
@@ -128,7 +118,7 @@ Item {
 
             QtControls.Label {
                 text: i18n("Country:")
-                color: useLabelThemeColor ? theme.textColor : labelColor
+                color: useLabelThemeColor ? Kirigami.Theme.textColor : labelColor
             }
 
             LabelDelegate {
@@ -137,7 +127,7 @@ Item {
 
             QtControls.Label {
                 text: i18n("Region:")
-                color: useLabelThemeColor ? theme.textColor : labelColor
+                color: useLabelThemeColor ? Kirigami.Theme.textColor : labelColor
             }
 
             LabelDelegate {
@@ -146,7 +136,7 @@ Item {
 
             QtControls.Label {
                 text: i18n("Postal Code:")
-                color: useLabelThemeColor ? theme.textColor : labelColor
+                color: useLabelThemeColor ? Kirigami.Theme.textColor : labelColor
             }
 
             LabelDelegate {
@@ -155,7 +145,7 @@ Item {
 
             QtControls.Label {
                 text: i18n("City:")
-                color: useLabelThemeColor ? theme.textColor : labelColor
+                color: useLabelThemeColor ? Kirigami.Theme.textColor : labelColor
             }
 
             LabelDelegate {
@@ -164,7 +154,7 @@ Item {
 
             QtControls.Label {
                 text: i18n("Coordinates:")
-                color: useLabelThemeColor ? theme.textColor : labelColor
+                color: useLabelThemeColor ? Kirigami.Theme.textColor : labelColor
             }
 
             LabelDelegate {
@@ -173,7 +163,7 @@ Item {
 
             QtControls.Label {
                 text: i18n("Hostname:")
-                color: useLabelThemeColor ? theme.textColor : labelColor
+                color: useLabelThemeColor ? Kirigami.Theme.textColor : labelColor
                 visible: showHostname
             }
 
@@ -184,10 +174,8 @@ Item {
 
             QtControls.Label {
                 Layout.columnSpan: 2
-                // Fix issue https://github.com/Davide-sd/ip_address/issues/8
                 Layout.alignment: Qt.AlignHCenter
-                // anchors.horizontalCenter: parent.horizontalCenter
-                color: useLinkThemeColor ? theme.highlightColor : linkColor
+                color: fullRoot.useLinkThemeColor ? Kirigami.Theme.highlightColor : fullRoot.linkColor
                 font.bold: true
                 wrapMode: Text.Wrap
                 text: jsonData !== undefined ? i18n("Open map in the browser") : "N/A"
@@ -203,13 +191,11 @@ Item {
 
             QtControls.Button {
                 Layout.columnSpan: 2
-                // Fix issue https://github.com/Davide-sd/ip_address/issues/8
                 Layout.alignment: Qt.AlignHCenter
-                // anchors.horizontalCenter: parent.horizontalCenter
                 Layout.preferredWidth: parent.width
                 text: i18n("Update")
                 onClicked: {
-                    debug_print("### [Update onClicked]")
+                    debug_print("[Update onClicked]")
                     root.reloadData()
                     // abortTooLongConnection()
                 }

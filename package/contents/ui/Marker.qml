@@ -1,5 +1,5 @@
 import QtQuick 2.2
-import QtLocation 5.9
+import QtLocation
 
 MapQuickItem{
     id: marker

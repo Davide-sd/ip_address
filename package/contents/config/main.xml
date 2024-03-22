@@ -24,7 +24,7 @@
         <entry name="fontSize" type="int">
             <default>100</default>
         </entry>
-        <entry name="showWidgetLabel" type="Bool">
+        <entry name="showCountryLabel" type="Bool">
             <default>true</default>
         </entry>
         <entry name="showVPNIcon" type="Bool">

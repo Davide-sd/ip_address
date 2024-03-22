@@ -24,32 +24,36 @@ TODO:
 	the map will be centered on the last known position, not in the marker
 */
 
-import QtQuick 2.2
-import QtQuick.Controls 1.1 as QtControls
-import QtQuick.Layouts 1.1
-import QtQuick.Window 2.1
 
-import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
-import org.kde.plasma.extras 2.0 as PlasmaExtras
+import QtQuick 2.2
+import QtQuick.Controls as QtControls
+import QtQuick.Layouts
+
+import org.kde.kirigami as Kirigami
+import org.kde.kirigamiaddons.components as KirigamiComponents
+import org.kde.ksvg as KSvg
+import org.kde.plasma.components as PlasmaComponents
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.extras as PlasmaExtras
+import org.kde.plasma.plasma5support as Plasma5Support
+import org.kde.plasma.plasmoid
 
 import "js/index.js" as ExternalJS
 
-Item {
+PlasmoidItem {
 	id: root
 
-	readonly property bool isVertical: plasmoid.formFactor === PlasmaCore.Types.Vertical
+	readonly property bool isVertical: Plasmoid.formFactor === PlasmaCore.Types.Vertical
 
-	readonly property int widgetIconSize: plasmoid.configuration.widgetIconSize
-	readonly property int updateIntervalMinutes: plasmoid.configuration.updateInterval
-	readonly property bool showFlagInCompact: plasmoid.configuration.showFlagInCompact
-	readonly property bool showVPNIcon: plasmoid.configuration.showVPNIcon
-	readonly property bool showIPInCompact: plasmoid.configuration.showIPInCompact
+	readonly property int widgetIconSize: Plasmoid.configuration.widgetIconSize
+	readonly property int updateIntervalMinutes: Plasmoid.configuration.updateInterval
+	readonly property bool showFlagInCompact: Plasmoid.configuration.showFlagInCompact
+	readonly property bool showVPNIcon: Plasmoid.configuration.showVPNIcon
+	readonly property bool showIPInCompact: Plasmoid.configuration.showIPInCompact
 	readonly property string globe_icon_path: "../icons/globe.svg"
-	readonly property bool useLabelThemeColor: plasmoid.configuration.useLabelThemeColor
-    readonly property string labelColor: plasmoid.configuration.labelColor
-    readonly property string vpnKeywords: plasmoid.configuration.vpnKeywords
+	readonly property bool useLabelThemeColor: Plasmoid.configuration.useLabelThemeColor
+    readonly property string labelColor: Plasmoid.configuration.labelColor
+    readonly property string vpnKeywords: Plasmoid.configuration.vpnKeywords
     
 	property real latitude: 0
 	property real longitude: 0
@@ -62,44 +66,10 @@ Item {
 	property int countSeconds: 1
 	property bool runTimer: true
 
-	property bool debug: true
-
-	Plasmoid.switchWidth: units.gridUnit * 10
-    Plasmoid.switchHeight: units.gridUnit * 12
-
-
-	// // NOTE: can't use this approach because it doesn't update the values when
-	// // a vpn change is detected. Why? who knows?!?!?
-	// PlasmaCore.DataSource {
-    //     id: geoDataSource
-    //     dataEngine: "geolocation"
-    //     connectedSources: ['location']
-    //     interval: 1000
-
-    //     onNewData: {
-	// 		debug_print("### [geoDataSource.onNewData] " + sourceName)
-    //         if (sourceName == 'location') {
-    //             // ipAddr.text = data.ip
-	// 			debug_print("### \t[geoDataSource.onNewData] " + countSeconds)
-	// 			debug_print(JSON.stringify(data, null, 4))
-	// 			countSeconds++
-    //         }
-    //     }
-	// }
-
-	// used to execute "send notification commands"
-	PlasmaCore.DataSource {
-		id: executable
-		engine: "executable"
-		connectedSources: []
-		function exec(cmd) {
-			connectSource(cmd)
-		}
-		signal exited(int exitCode, int exitStatus, string stdout, string stderr)
-    }
+	property bool debug: false
 
 	// used to execute query commands for vpn checks
-	PlasmaCore.DataSource {
+	Plasma5Support.DataSource {
 		id: executable_vpn
 		engine: "executable"
 		connectedSources: []
@@ -111,10 +81,6 @@ Item {
 			var exitStatus = data["exit status"]
 			var stdout = data["stdout"]
 			var stderr = data["stderr"]
-			// debug_print("### [executable onNewData] exitCode: " + exitCode)
-			// debug_print("### [executable onNewData] exitStatus: " + exitStatus)
-			// debug_print("### [executable onNewData] stdout: " + stdout)
-			// debug_print("### [executable onNewData] stderr: " + stderr)
 
 			prevVPNstatus = curVPNstatus
 			if (vpnKeywords !== ""){
@@ -151,7 +117,7 @@ Item {
 		repeat: true
 		triggeredOnStart: true
 		onTriggered: {
-			debug_print("### [Timer IP Address onTriggered]")
+			debug_print("[timer.onTriggered]")
 			reloadData()
 			runTimer = false
 		}
@@ -166,17 +132,17 @@ Item {
 		repeat: true
 		triggeredOnStart: true
 		onTriggered: {
-			debug_print("### [timer_vpn.onTriggered] vpnKeywords: " + vpnKeywords)
+			debug_print("[timer_vpn.onTriggered] vpnKeywords: " + vpnKeywords)
 			executable_vpn.exec("nmcli c show --active | grep -E '" + vpnKeywords + "'")
 
 			if (prevVPNstatus != curVPNstatus) {
-				debug_print("### [timer_vpn.onTriggered] detected change, sending request")
+				debug_print("[timer_vpn.onTriggered] detected change, sending request")
 				setTimeout(reloadData(), 1000)
 			}
 		}
 	}
 
-	PlasmaCore.Svg {
+	KSvg.Svg {
 		id: vpn_svg
 		imagePath: Qt.resolvedUrl("../icons/vpn-shield-off.svg")
 	}
@@ -184,7 +150,7 @@ Item {
 	function getIPdata(successCallback, failureCallback) {
 		// append /json to the end to force json data response
 		var getUrl = "https://ipinfo.io/json"
-		debug_print("### [getIPdata] attempting request")
+		debug_print("[getIPdata] attempting request")
 
 		try {
 			var request = new XMLHttpRequest()
@@ -194,7 +160,7 @@ Item {
 			// custom timer to simulate it.
 			var myTimeoutTimer = Qt.createQmlObject("import QtQuick 2.2; Timer {interval: 5000; repeat: false; running: true;}",root,"MyTimeoutTimer");
 			myTimeoutTimer.triggered.connect(function(){
-				debug_print("### [getIPdata] request TIMEOUT")
+				debug_print("[getIPdata] request TIMEOUT")
 				request.responseText = "Timeout reached"
 				request.abort()
 				// often, just after a vpn change has been detected, the first 
@@ -224,7 +190,7 @@ Item {
 			return request
 		}
 		catch (err) {
-			debug_print("### [getIPdata] Error" + JSON.stringify(err, null, 4))
+			debug_print("[getIPdata] Error" + JSON.stringify(err, null, 4))
 			return null
 		}
 	}
@@ -234,20 +200,20 @@ Item {
 		var coords = jsonData.loc.split(",")
 		root.latitude = parseFloat(coords[0])
 		root.longitude = parseFloat(coords[1])
-		debug_print("### [successCallback]: " + JSON.stringify(jsonData, null, 4))
+		debug_print("[successCallback]: " + JSON.stringify(jsonData, null, 4))
 	}
 
 	function failureCallback(request) {
-		debug_print("### [failureCallback] request.status: " + request.status + "; request.responseText: " + request.responseText)
+		debug_print("[failureCallback] request.status: " + request.status + "; request.responseText: " + request.responseText)
 	}
 
 	function debug_print(msg) {
 		if (debug)
-			console.log(msg)
+			console.log("com.github.davide-sd.ip_address", msg)
 	}
 
 	function reloadData() {
-		debug_print("### [reloadData] Sending request")
+		debug_print("[reloadData] Sending request")
 		root.request = getIPdata(successCallback, failureCallback)
 	}
 
@@ -268,25 +234,25 @@ Item {
 		return Qt.resolvedUrl("../icons/1x1/" + country + ".svg")
 	}
 
-	Plasmoid.compactRepresentation: MouseArea {
+	compactRepresentation: MouseArea {
         id: compactRoot
 		hoverEnabled: true
 		acceptedButtons: Qt.LeftButton | Qt.MiddleButton
 
 		// Taken from DigitalClock to ensure uniform sizing when next to each other
-        readonly property bool tooSmall: plasmoid.formFactor === PlasmaCore.Types.Horizontal && Math.round(2 * (compactRoot.height / 5)) <= theme.smallestFont.pixelSize
-		readonly property int fontSize: plasmoid.configuration.fontSize
-		readonly property bool showWidgetLabel: plasmoid.configuration.showWidgetLabel
+        readonly property bool tooSmall: Plasmoid.formFactor === PlasmaCore.Types.Horizontal && Math.round(2 * (compactRoot.height / 5)) <= Kirigami.Theme.smallFont.pixelSize
+		readonly property int fontSize: Plasmoid.configuration.fontSize
+		readonly property bool showCountryLabel: Plasmoid.configuration.showCountryLabel
 
 		Layout.minimumWidth: compactRow.implicitWidth
 		Layout.maximumWidth: Layout.minimumWidth
 		Layout.preferredWidth: Layout.minimumWidth
 
-		onClicked: {
+		onClicked: (mouse)=> {
 			if (mouse.button == Qt.MiddleButton) {
                 root.reloadData()
             } else {
-                plasmoid.expanded = !plasmoid.expanded
+                root.expanded = !root.expanded
             }
 		}
 
@@ -295,33 +261,34 @@ Item {
 			anchors.centerIn: parent
 			flow: isVertical ? GridLayout.TopToBottom : GridLayout.LeftToRight
 
-			PlasmaCore.SvgItem {
+			KSvg.SvgItem {
 				id: icon
-				Layout.minimumWidth: units.iconSizes.tiny
-                Layout.minimumHeight: units.iconSizes.tiny
-                Layout.maximumWidth: units.iconSizes.enormous
-                Layout.maximumHeight: units.iconSizes.enormous
+				Layout.minimumWidth: Kirigami.Units.iconSizes.small
+                Layout.minimumHeight: Kirigami.Units.iconSizes.small
+                Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
+                Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
                 Layout.preferredWidth: ExternalJS.getIconSize(widgetIconSize, compactRoot)
                 Layout.preferredHeight: Layout.preferredWidth
-				svg: PlasmaCore.Svg {
+				svg: KSvg.Svg {
 					id: svg
 					imagePath: getIconPath(false)
 				}
 			}
 
 			QtControls.Label {
-				color: useLabelThemeColor ? theme.textColor : labelColor
+				color: useLabelThemeColor ? Kirigami.Theme.textColor : labelColor
 				text: {
-					if (!showFlagInCompact) {
-						if (showIPInCompact)
-							return "IP " + root.jsonData.ip
-						return "IP"
+					if (root.jsonData != undefined) {
+						var country = root.jsonData.country.toUpperCase()
+						if (showCountryLabel && showIPInCompact)
+							return country + " " + root.jsonData.ip
+						else if (showCountryLabel)
+							return country
+						else if (showIPInCompact)
+							return root.jsonData.ip
+						return ""
 					}
-
-					var country = root.jsonData.country.toUpperCase()
-					if (showIPInCompact)
-						return country + " " + root.jsonData.ip
-					return country
+					return ""
 				}
 				height: compactRoot.height
 				fontSizeMode: isVertical ? Text.HorizontalFit : Text.FixedSize
@@ -329,18 +296,17 @@ Item {
                     if (isVertical)
                         return undefined
                     else
-                        return tooSmall ? theme.defaultFont.pixelSize : units.roundToIconSize(units.gridUnit * 2) * fontSize / 100
+                        return tooSmall ? Kirigami.Theme.defaultFont.pixelSize : Kirigami.Units.iconSizes.roundedIconSize(Kirigami.Units.gridUnit * 2) * fontSize / 100
                 }
-                minimumPointSize: theme.smallestFont.pointSize
-				visible: showWidgetLabel
+				visible: showCountryLabel || showIPInCompact
 			}
 
-			PlasmaCore.SvgItem {
+			KSvg.SvgItem {
 				id: vpn_icon
-				Layout.minimumWidth: units.iconSizes.tiny
-                Layout.minimumHeight: units.iconSizes.tiny
-                Layout.maximumWidth: units.iconSizes.enormous
-                Layout.maximumHeight: units.iconSizes.enormous
+				Layout.minimumWidth: Kirigami.Units.iconSizes.small
+                Layout.minimumHeight: Kirigami.Units.iconSizes.small
+                Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
+                Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
                 Layout.preferredWidth: ExternalJS.getIconSize(widgetIconSize, compactRoot)
                 Layout.preferredHeight: Layout.preferredWidth
 				visible: showVPNIcon
@@ -368,6 +334,6 @@ Item {
 	    }
 	}
 
-	Plasmoid.fullRepresentation: FullRepresentation {}
+	fullRepresentation: FullRepresentation {}
 
 }

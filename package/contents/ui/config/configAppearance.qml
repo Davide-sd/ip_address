@@ -15,23 +15,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-import QtQuick 2.0
-import QtQuick.Controls 1.0 as QtControls
-import QtQuick.Controls.Styles 1.0
-import QtQuick.Layouts 1.0
-import QtQuick.Dialogs 1.2
+import QtQuick 2.2
+import QtQuick.Controls as QtControls
+import QtQuick.Layouts
+import QtQuick.Dialogs
 
-ColumnLayout {
+import org.kde.kirigami as Kirigami
+import org.kde.kcmutils as KCM
+
+KCM.SimpleKCM {
     id: appearancePage
 
     Layout.minimumWidth: parent.width
     Layout.maximumWidth: parent.width
     Layout.preferredWidth: parent.width
 
-    // property alias cfg_widgetIconSize: widgetIconSizeCombo.currentIndex
-    // property alias cfg_updateInterval: updateIntervalSpin.value
-    // property alias cfg_layoutRow: layoutRow.checked
-    // property alias cfg_showFlagInCompact: showFlagInCompact.checked
     property alias cfg_mapSize: mapSizeSpin.value
     property alias cfg_mapZoomLevel: mapZoomLevelSpin.value
     property alias cfg_showHostname: showHostname.checked
@@ -41,79 +39,67 @@ ColumnLayout {
     property alias cfg_useLinkThemeColor: linkThemeColorCheckBox.checked
     property alias cfg_linkColor: linkColorRectangle.color
 
-    QtControls.GroupBox {
-        Layout.fillWidth: true
-        title: i18n("Map configurations")
+    Kirigami.FormLayout {
 
-        ColumnLayout {
-
-            RowLayout {
-                QtControls.Label {
-                    text: i18n('Map Size:')
-                }
-
-                QtControls.SpinBox {
-                    id: mapSizeSpin
-                    minimumValue: 50
-                    maximumValue: 500
-                    decimals: 0
-                    stepSize: 1
-                    suffix: ' px'
-                }
+        QtControls.SpinBox {
+            id: mapSizeSpin
+            Kirigami.FormData.label: i18n("Map Size:")
+            from: 50
+            to: 500
+            stepSize: 1
+            textFromValue: function(value) {
+                return qsTr("%1 px").arg(value)
             }
-
-            RowLayout {
-                QtControls.Label {
-                    text: i18n('Default zoom level:')
-                }
-
-                QtControls.SpinBox {
-                    id: mapZoomLevelSpin
-                    minimumValue: 0
-                    maximumValue: 19
-                    decimals: 0
-                    stepSize: 1
-                    suffix: ''
-                }
+            valueFromText: function (text) {
+                return parseInt(text)
             }
         }
-    }
 
-    QtControls.GroupBox {
-        Layout.fillWidth: true
-        title: i18n("Layout")
-
-        ColumnLayout {
-            QtControls.ExclusiveGroup { id: displayOrderGroup }
-            QtControls.RadioButton {
-                id: layoutRow
-                text: i18n('Use horizontal layout')
-                exclusiveGroup: displayOrderGroup
-            }
-            QtControls.RadioButton {
-                id: layoutColumn
-                text: i18n('Use vertical layout')
-                checked: !layoutRow.checked
-                exclusiveGroup: displayOrderGroup
-            }
+        QtControls.SpinBox {
+            id: mapZoomLevelSpin
+            Kirigami.FormData.label: i18n("Map default zoom level:")
+            from: 0
+            to: 19
+            stepSize: 1
         }
-    }
 
-    QtControls.GroupBox {
-        Layout.fillWidth: true
-        title: i18n("Set Custom Colors")
+        Item { // tighten layout
+            Layout.fillHeight: true
+        }
+
+        QtControls.ButtonGroup {
+            id: displayOrderGroup
+        }
+
+        QtControls.RadioButton {
+            id: layoutRow
+            Kirigami.FormData.label: i18n("Layout:")
+            QtControls.ButtonGroup.group: displayOrderGroup
+            text: i18n("horizontal layout")
+        }
+        QtControls.RadioButton {
+            id: layoutColumn
+            QtControls.ButtonGroup.group: displayOrderGroup
+            text: i18n("vertical layout")
+            checked: !layoutRow.checked
+        }
+
+        Item { // tighten layout
+            Layout.fillHeight: true
+        }
 
         GridLayout {
-            id: labelsContainer
+            id: labelColorContainer
             flow: GridLayout.LeftToRight
             columns: 2
             Layout.minimumWidth: 300
             Layout.maximumWidth: 300
             Layout.preferredWidth: 300
+            Kirigami.FormData.label: i18n("Label Color:")
 
             QtControls.CheckBox {
                 id: labelThemeColorCheckBox
-                text: i18n("Use Label Theme Color")
+                text: i18n("Use Theme")
             }
 
             QtControls.Button {
@@ -130,10 +116,20 @@ ColumnLayout {
                     border.width: 0
                 }
             }
+        }
+
+        GridLayout {
+            id: linkColorContainer
+            flow: GridLayout.LeftToRight
+            columns: 2
+            Layout.minimumWidth: 300
+            Layout.maximumWidth: 300
+            Layout.preferredWidth: 300
+            Kirigami.FormData.label: i18n("Link Color:")
 
             QtControls.CheckBox {
                 id: linkThemeColorCheckBox
-                text: i18n("Use Links Theme Color")
+                text: i18n("Use Theme")
             }
 
             QtControls.Button {
@@ -151,26 +147,23 @@ ColumnLayout {
                 }
             }
         }
-    }
 
-    ColorDialog {
-        id: labelColorDialog
-        onAccepted: cfg_labelColor = this.color
-    }
+        ColorDialog {
+            id: labelColorDialog
+            onAccepted: cfg_labelColor = selectedColor
+        }
 
-    ColorDialog {
-        id: linkColorDialog
-        onAccepted: cfg_linkColor = this.color
-    }
-
-    QtControls.GroupBox {
-        Layout.fillWidth: true
-        title: i18n("Others")
+        ColorDialog {
+            id: linkColorDialog
+            onAccepted: cfg_linkColor = selectedColor
+        }
 
         QtControls.CheckBox {
             id: showHostname
+            Kirigami.FormData.label: i18n("Others:")
             text: i18n("Show host name")
         }
+
     }
 
     Item { // tighten layout
