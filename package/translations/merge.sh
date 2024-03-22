@@ -12,8 +12,10 @@ if [ -z "$(which jq)" ]; then
 fi
 
 DIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
-plasmoidName=`jq .KPlugin.Name $DIR/../metadata.json`
+plasmoidName=`jq .KPlugin.Id $DIR/../metadata.json`
+plasmoidName=$(echo "${plasmoidName:1:-1}")
 website=`jq .KPlugin.Website $DIR/../metadata.json`
+website=$(echo "${website:1:-1}")
 bugAddress="$website"
 packageRoot=".." # Root of translatable sources
 projectName="${plasmoidName}" # project name

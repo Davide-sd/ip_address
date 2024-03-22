@@ -1,4 +1,4 @@
-#!/bin/sh
+# !/bin/sh
 # Version: 5
 
 # This script will convert the *.po files to *.mo files, rebuilding the package/contents/locale folder.
@@ -13,11 +13,12 @@ if [ -z "$(which jq)" ]; then
 fi
 
 DIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
-plasmoidName=`jq .KPlugin.Name $DIR/../metadata.json`
+plasmoidName=`jq .KPlugin.Id $DIR/../metadata.json`
+plasmoidName=$(echo "${plasmoidName:1:-1}")
 website=`jq .KPlugin.Website $DIR/../metadata.json`
-bugAddress="$website"
+website=$(echo "${website:1:-1}")
+bugAddress=$website
 packageRoot=".." # Root of translatable sources
-projectName="${plasmoidName}" # project name
 
 #---
 if [ -z "$plasmoidName" ]; then
@@ -41,7 +42,7 @@ for cat in $catalogs; do
 	catLocale=`basename ${cat%.*}`
 	msgfmt -o "${catLocale}.mo" "$cat"
 
-	installPath="$DIR/../contents/locale/${catLocale}/LC_MESSAGES/${projectName}.mo"
+	installPath="$DIR/../contents/locale/${catLocale}/LC_MESSAGES/${plasmoidName}.mo"
 
 	echo "[build] Install to ${installPath}"
 	mkdir -p "$(dirname "$installPath")"
