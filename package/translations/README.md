@@ -4,7 +4,7 @@ With KDE Frameworks v5.37 and above, translations are bundled with the *.plasmoi
 
 ## Install Translations
 
-Go to `~/.local/share/plasma/plasmoids/com.github.davide-sd.ip_address/translate/` and run `sh ./build --restartplasma`.
+Go to `~/.local/share/plasma/plasmoids/com.github.davide-sd.ip_address/translations/` and run `sh ./build --restartplasma`.
 
 ## New Translations
 

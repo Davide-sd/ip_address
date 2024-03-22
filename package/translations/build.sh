@@ -5,12 +5,19 @@
 # Feature discussion: https://phabricator.kde.org/D5209
 # Eg: contents/locale/fr_CA/LC_MESSAGES/plasma_applet_org.kde.plasma.eventcalendar.mo
 
+if [ -z "$(which jq)" ]; then
+	echo "[build] Error: jq command not found. Need to install jq"
+	echo "[build] Running 'sudo apt install jq'"
+	sudo apt install jq
+	echo "[build] jq installation should be finished. Going back to installing translations."
+fi
+
 DIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
-plasmoidName=`kreadconfig5 --file="$DIR/../metadata.desktop" --group="Desktop Entry" --key="X-KDE-PluginInfo-Name"`
-website=`kreadconfig5 --file="$DIR/../metadata.desktop" --group="Desktop Entry" --key="X-KDE-PluginInfo-Website"`
+plasmoidName=`jq .KPlugin.Name $DIR/../metadata.json`
+website=`jq .KPlugin.Website $DIR/../metadata.json`
 bugAddress="$website"
 packageRoot=".." # Root of translatable sources
-projectName="plasma_applet_${plasmoidName}" # project name
+projectName="${plasmoidName}" # project name
 
 #---
 if [ -z "$plasmoidName" ]; then

@@ -1,22 +1,21 @@
-# Translation of ip_address in en
-# Copyright (C) 2019
-# This file is distributed under the same license as the ip_address package.
-#
+# Translation of  in LANGUAGE
+# Copyright (C) 2024
+# This file is distributed under the same license as the  package.
 # victorhck <victorhck@mailbox.org>, 2019.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: ip_address \n"
-"Report-Msgid-Bugs-To: https://github.com/Davide-sd/ip_address\n"
-"POT-Creation-Date: 2020-05-26 11:57+0200\n"
-"PO-Revision-Date: 2019-02-13 18:08+0100\n"
-"Last-Translator: victorhck <victorhck@mailbox.org>\n"
-"Language-Team: Spanish <>\n"
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: \"https://github.com/Davide-sd/ip_address\"\n"
+"POT-Creation-Date: 2024-03-22 19:10+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 18.12.1\n"
 
 #: ../contents/config/config.qml
 msgid "General"
@@ -27,27 +26,39 @@ msgid "Appearance"
 msgstr "Aspecto"
 
 #: ../contents/ui/config/configAppearance.qml
-msgid "Map configurations"
-msgstr "Configuraciones del mapa"
+msgid "Map Size:"
+msgstr "Tamaño del mapa:"
 
 #: ../contents/ui/config/configAppearance.qml
-msgid "Layout"
-msgstr "Diseño"
+msgid "Map default zoom level:"
+msgstr "Nivel predeterminado de zoom:"
 
 #: ../contents/ui/config/configAppearance.qml
-msgid "Set Custom Colors"
-msgstr ""
+msgid "Layout:"
+msgstr "Layout:"
 
 #: ../contents/ui/config/configAppearance.qml
-msgid "Use Label Theme Color"
-msgstr ""
+msgid "horizontal layout"
+msgstr "diseño horizontal"
 
 #: ../contents/ui/config/configAppearance.qml
-msgid "Use Links Theme Color"
-msgstr ""
+msgid "vertical layout"
+msgstr "diseño vertical"
 
 #: ../contents/ui/config/configAppearance.qml
-msgid "Others"
+msgid "Label Color:"
+msgstr "Color de la etiqueta"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Use Theme"
+msgstr "Usar tema"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Link Color:"
+msgstr "Color de link"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Others:"
 msgstr "Otros"
 
 #: ../contents/ui/config/configAppearance.qml
@@ -55,36 +66,62 @@ msgid "Show host name"
 msgstr "Mostrar nombre del host"
 
 #: ../contents/ui/config/configGeneral.qml
-msgid "IP Address"
+msgid "Update Interval:"
+msgstr "Intervalo de actualización:"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Icon size:"
+msgstr "Tamaño del icono:"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Font size:"
+msgstr "Tamaño de la fuente:"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Show on widget:"
+msgstr "Mostrar en el widget"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Country flag"
+msgstr "La bandera del país"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Country label"
+msgstr "Mostrar la etiqueta del país"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "IP address"
 msgstr ""
 
 #: ../contents/ui/config/configGeneral.qml
-msgid "Icon size shown in the widget:"
-msgstr "Tamaño del icono mostrado en el widget:"
-
-#: ../contents/ui/config/configGeneral.qml
-msgid "Display the label alongside the widget icon"
-msgstr "Mostrar la etiqueta junto al icono del widget"
-
-#: ../contents/ui/config/configGeneral.qml
-msgid "Display Country flag in widget icon"
-msgstr "Mostrar la bandera del país en el icono del widget"
-
-#: ../contents/ui/config/configGeneral.qml
-msgid "Display IP address next to widget icon"
-msgstr "Mostrar Dirección IP junto al icono del widget"
-
-#: ../contents/ui/config/configGeneral.qml
-msgid "VPN Status (Experimental feature)"
+msgid "VPN status icon"
 msgstr ""
 
 #: ../contents/ui/config/configGeneral.qml
-msgid "Display the VPN status icon"
+msgid ""
+"VPN keywords for nmcli (use\n"
+"pipe character as separator):"
+msgstr ""
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Explanation for VPN icon:"
+msgstr ""
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Red shield: VPN is not active;"
+msgstr ""
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Green shield: VPN is active;"
+msgstr ""
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Orange disk: some error happened."
 msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "IP address:"
-msgstr "Dirección IP:"
+msgstr ""
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Country:"
@@ -92,7 +129,7 @@ msgstr "País:"
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Region:"
-msgstr "Región:"
+msgstr "Region:"
 
 #: ../contents/ui/FullRepresentation.qml
 msgid "Postal Code:"
@@ -125,27 +162,3 @@ msgstr "Dirección IP pública:"
 #: ../contents/ui/main.qml
 msgid "Connected to: "
 msgstr "Conectado a:"
-
-#~ msgid "Map Size:"
-#~ msgstr "Tamaño del mapa:"
-
-#~ msgid "Default zoom level:"
-#~ msgstr "Nivel predeterminado de zoom:"
-
-#~ msgid "Use horizontal layout"
-#~ msgstr "Utilizar diseño horizontal"
-
-#~ msgid "Use vertical layout"
-#~ msgstr "Utilizar diseño vertical"
-
-#~ msgid "Widget configuration"
-#~ msgstr "Configuración del widget"
-
-#~ msgid "Update Interval:"
-#~ msgstr "Intervalo de actualización:"
-
-#~ msgid "Widget Font size:"
-#~ msgstr "Tamaño de la fuente del widget:"
-
-#~ msgid "Public IP Address"
-#~ msgstr "Dirección IP pública"
