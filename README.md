@@ -1,4 +1,4 @@
-# Public IP Address widget for KDE 5
+# Public IP Address widget for KDE 6
 
 ## Description
 
