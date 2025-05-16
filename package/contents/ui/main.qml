@@ -68,6 +68,17 @@ PlasmoidItem {
 
 	property bool debug: false
 
+	// used to execute "send notification commands"
+	Plasma5Support.DataSource {
+		id: executable
+		engine: "executable"
+		connectedSources: []
+		function exec(cmd) {
+			connectSource(cmd)
+		}
+		signal exited(int exitCode, int exitStatus, string stdout, string stderr)
+ 	 }
+
 	// used to execute query commands for vpn checks
 	Plasma5Support.DataSource {
 		id: executable_vpn
