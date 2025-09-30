@@ -54,7 +54,7 @@ PlasmoidItem {
 	readonly property bool useLabelThemeColor: Plasmoid.configuration.useLabelThemeColor
     readonly property string labelColor: Plasmoid.configuration.labelColor
     readonly property string vpnKeywords: Plasmoid.configuration.vpnKeywords
-    
+
 	property real latitude: 0
 	property real longitude: 0
 	property var jsonData: {}
@@ -66,7 +66,7 @@ PlasmoidItem {
 	property int countSeconds: 1
 	property bool runTimer: true
 
-	property bool debug: false
+	property bool debug: true
 
 	// used to execute "send notification commands"
 	Plasma5Support.DataSource {
@@ -103,7 +103,7 @@ PlasmoidItem {
 					vpn_svg.imagePath = Qt.resolvedUrl("../icons/vpn-shield-on.svg")
 					curVPNstatus = "active"
 				}
-				
+
 				if (stderr !== "") {
 					vpn_svg.imagePath = Qt.resolvedUrl("../icons/question-mark.svg")
 					curVPNstatus = "unknown"
@@ -148,7 +148,9 @@ PlasmoidItem {
 
 			if (prevVPNstatus != curVPNstatus) {
 				debug_print("[timer_vpn.onTriggered] detected change, sending request")
-				setTimeout(reloadData(), 1000)
+				// better to wait for some time in order for the connection
+				// to stabilize
+				setTimeout(function() { reloadData() }, 1000)
 			}
 		}
 	}
@@ -158,8 +160,22 @@ PlasmoidItem {
 		imagePath: Qt.resolvedUrl("../icons/vpn-shield-off.svg")
 	}
 
+	function setTimeout(callback, delay) {
+		// NOTE: In QML/Qt Quick, we don't have direct access to JavaScript's
+		// browser-specific APIs like setTimeout or setInterval, because QML
+		// uses Qt's JavaScript engine, not a web browser environment.
+		// So we need a custom way to setup a delay.
+		var timer = Qt.createQmlObject('import QtQuick 2.0; Timer { repeat: false }', timer_vpn)
+		timer.interval = delay
+		timer.triggered.connect(function() {
+			callback()
+			timer.destroy()
+		})
+		timer.start()
+	}
+
 	function getIPdata(successCallback, failureCallback) {
-		// append /json to the end to force json data response
+		// append '/json' to the end to force json data response
 		var getUrl = "https://ipinfo.io/json"
 		debug_print("[getIPdata] attempting request")
 
@@ -167,20 +183,20 @@ PlasmoidItem {
 			var request = new XMLHttpRequest()
 			request.open('GET', getUrl)
 
-			// QML XMLHttpRequest doesn't have ontimeout. Need to create a 
+			// QML XMLHttpRequest doesn't have ontimeout. Need to create a
 			// custom timer to simulate it.
 			var myTimeoutTimer = Qt.createQmlObject("import QtQuick 2.2; Timer {interval: 5000; repeat: false; running: true;}",root,"MyTimeoutTimer");
 			myTimeoutTimer.triggered.connect(function(){
 				debug_print("[getIPdata] request TIMEOUT")
 				request.responseText = "Timeout reached"
 				request.abort()
-				// often, just after a vpn change has been detected, the first 
+				// often, just after a vpn change has been detected, the first
 				// requests are going to timeout. Keep sending them until one
 				// is successful.
 				// TODO: is there any better approach???
 				getIPdata(successCallback, failureCallback)
 			});
-			
+
 			request.onreadystatechange = function () {
 				if (request.readyState !== XMLHttpRequest.DONE) {
 					return
