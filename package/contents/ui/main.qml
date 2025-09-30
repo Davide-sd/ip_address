@@ -54,10 +54,13 @@ PlasmoidItem {
 	readonly property bool useLabelThemeColor: Plasmoid.configuration.useLabelThemeColor
     readonly property string labelColor: Plasmoid.configuration.labelColor
     readonly property string vpnKeywords: Plasmoid.configuration.vpnKeywords
+    readonly property bool sendNotifOnIPChange: Plasmoid.configuration.sendNotifOnIPChange
 
 	property real latitude: 0
 	property real longitude: 0
 	property var jsonData: {}
+	property var curIPaddr: ""
+	property var prevIPaddr: ""
 
 	property var request: null
 	property string prevVPNstatus: "unknown"
@@ -195,6 +198,7 @@ PlasmoidItem {
 				// is successful.
 				// TODO: is there any better approach???
 				getIPdata(successCallback, failureCallback)
+				myTimeoutTimer.destroy()
 			});
 
 			request.onreadystatechange = function () {
@@ -227,6 +231,12 @@ PlasmoidItem {
 		var coords = jsonData.loc.split(",")
 		root.latitude = parseFloat(coords[0])
 		root.longitude = parseFloat(coords[1])
+		curIPaddr = jsonData.ip
+
+		if (sendNotifOnIPChange && (prevIPaddr != curIPaddr)) {
+			executable.exec("notify-send 'New IP address: " + curIPaddr + "' -a 'Public IP Address widget'")
+			prevIPaddr = curIPaddr
+		}
 		debug_print("[successCallback]: " + JSON.stringify(jsonData, null, 4))
 	}
 
