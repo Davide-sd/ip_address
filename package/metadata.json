@@ -24,7 +24,7 @@
         "ServiceTypes": [
             "Plasma/Applet"
         ],
-        "Version": "1.2.8",
+        "Version": "1.2.9",
         "Website": "https://github.com/Davide-sd/ip_address"
     },
     "X-Plasma-API-Minimum-Version": "6.0"
