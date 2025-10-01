@@ -38,7 +38,6 @@ import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.plasma5support as Plasma5Support
 import org.kde.plasma.plasmoid
 
-import "js/index.js" as ExternalJS
 
 PlasmoidItem {
 	id: root
@@ -61,18 +60,13 @@ PlasmoidItem {
 	property var jsonData: {}
 	property var curIPaddr: ""
 	property var prevIPaddr: ""
-
-	property var request: null
 	property string prevVPNstatus: "unknown"
 	property string curVPNstatus: "unknown"
-
 	property var reloadInProgress: false
-	property var activeRequest: null
-	property var activeTimeoutTimer: null
 
-	property bool debug: true
+	property bool debug: false
 
-	// used to execute "send notification commands"
+	// used to execute 'send notification commands'
 	Plasma5Support.DataSource {
 		id: executable
 		engine: "executable"
@@ -91,7 +85,7 @@ PlasmoidItem {
 		function exec(cmd) {
 			connectSource(cmd)
 		}
-		onNewData: {
+		onNewData: function(sourceName, data) {
 			var exitCode = data["exit code"]
 			var exitStatus = data["exit status"]
 			var stdout = data["stdout"]
@@ -124,6 +118,51 @@ PlasmoidItem {
 		signal exited(int exitCode, int exitStatus, string stdout, string stderr)
     }
 
+	// used to execute queries with curl
+	// NOTE: why using Plasma5Support.DataSource with engine="executable"
+	// instead of `XMLHttpRequest`? Because the latter stops working when
+	// a VPN status change is detected. It is unreliable.
+	Plasma5Support.DataSource {
+		id: executable_curl
+		engine: "executable"
+		connectedSources: []
+		function exec(cmd) {
+			connectSource(cmd)
+		}
+		// Signal emitted when the command exits
+        onNewData: function(sourceName, data) {
+			debug_print("[executable_curl.onNewData]")
+			let exitCode   = data["exit code"]
+			let exitStatus = data["exit status"]
+			let stdout     = data.stdout || ""
+			let stderr     = data.stderr || ""
+
+			// important: free it up
+			disconnectSource(sourceName)
+
+			if (exitStatus !== 0) {
+            	debug_print(
+					"Process crashed or failed to start: " + sourceName +
+					". Status: " + exitStatus + ". Stderr: " + stderr)
+				return
+			}
+
+			if (exitCode !== 0) {
+				debug_print(
+					"Command exited with error: " + sourceName +
+					". Code: " + exitCode + ". Stderr: " + stderr)
+				return
+			}
+
+			try {
+				var json = JSON.parse(stdout)
+				successCallback(json)
+			} catch (e) {
+				failureCallback("Invalid JSON: " + e)
+			}
+        }
+	}
+
 	// used to send a request to ip-info
 	Timer {
 		id: timer
@@ -154,7 +193,7 @@ PlasmoidItem {
 				// to stabilize
 				var wait_for = 5000
 				debug_print("[timer_vpn.onTriggered] detected change, scheduling request. Waiting for " + wait_for + "ms")
-				cancelReloadChain()   // abort old retries
+				reloadInProgress = false   // abort old retries
 				setTimeout(function() {
 					debug_print("[timer_vpn.onTriggered] Waited for " + wait_for + "ms. Executing reloadData()")
 					reloadData()
@@ -166,6 +205,25 @@ PlasmoidItem {
 	KSvg.Svg {
 		id: vpn_svg
 		imagePath: Qt.resolvedUrl("../icons/vpn-shield-off.svg")
+	}
+
+	function getIconSize(iconSize, compactRoot) {
+		switch(iconSize) {
+			case 1:
+				return Kirigami.Units.iconSizes.small
+			case 2:
+				return Kirigami.Units.iconSizes.smallMedium
+			case 3:
+				return Kirigami.Units.iconSizes.medium
+			case 4:
+				return Kirigami.Units.iconSizes.large
+			case 5:
+				return Kirigami.Units.iconSizes.huge
+			case 6:
+				return Kirigami.Units.iconSizes.enormous
+			default:
+				return typeof(compactRoot) === "undefined" ? Kirigami.Units.iconSizes.medium : compactRoot.height
+		}
 	}
 
 	function setTimeout(callback, delay) {
@@ -184,79 +242,18 @@ PlasmoidItem {
 	}
 
 	function getIPdata(successCallback, failureCallback) {
-		var getUrl = "https://ipinfo.io/json"
-		debug_print("[getIPdata] attempting request")
+		debug_print("[getIPdata] running curl")
 
 		try {
-			var request = new XMLHttpRequest()
-			request.open('GET', getUrl)
-			var done = false
-
-			// Timeout timer
-			var myTimeoutTimer = Qt.createQmlObject(
-				"import QtQuick 2.2; Timer {interval: 5000; repeat: false; running: true;}",
-				root,
-				"MyTimeoutTimer"
-			)
-			myTimeoutTimer.triggered.connect(function() {
-				if (done) return
-				done = true
-				debug_print("[getIPdata] request TIMEOUT")
-				request.abort()
-				failureCallback(request)
-				myTimeoutTimer.destroy()
-			})
-
-			request.onreadystatechange = function () {
-				if ((request.readyState !== XMLHttpRequest.DONE) || done)
-					return
-
-				done = true
-				myTimeoutTimer.running = false
-				myTimeoutTimer.destroy()
-
-				if (request.status !== 200) {
-					failureCallback(request)
-					return
-				}
-
-				var jsonData = JSON.parse(request.responseText)
-				successCallback(jsonData)
-			}
-
-			request.send()
-
-			// save handles globally so we can cancel later
-			activeRequest = request
-			activeTimeoutTimer = myTimeoutTimer
-
-			return request
-		}
-		catch (err) {
-			debug_print("[getIPdata] Error " + JSON.stringify(err, null, 4))
-			return null
+			// -s for silent, --max-time for timeout
+			let cmd = "curl -s --max-time 5 https://ipinfo.io/json"
+			executable_curl.exec(cmd)
+			return true
+		} catch (err) {
+			debug_print("[getIPdata] Error " + err)
+			return false
 		}
 	}
-
-	function cancelReloadChain() {
-		if (reloadInProgress) {
-			debug_print("[cancelReloadChain] Aborting current reload chain")
-
-			if (activeRequest) {
-				try { activeRequest.abort() } catch (e) {}
-				activeRequest = null
-			}
-
-			if (activeTimeoutTimer) {
-				try { activeTimeoutTimer.stop(); activeTimeoutTimer.destroy() } catch (e) {}
-				activeTimeoutTimer = null
-			}
-
-			reloadInProgress = false
-		}
-	}
-
-
 
 	function successCallback(jsonData) {
 		root.jsonData = jsonData
@@ -266,37 +263,14 @@ PlasmoidItem {
 		curIPaddr = jsonData.ip
 
 		if (sendNotifOnIPChange && (prevIPaddr != curIPaddr)) {
-			executable.exec("notify-send 'New IP address: " + curIPaddr + "' -a 'Public IP Address widget'")
+			executable.exec("notify-send 'New IP address: " + curIPaddr + "\nVPN status: " + curVPNstatus + "' -a 'Public IP Address widget'")
 			prevIPaddr = curIPaddr
 		}
 		debug_print("[successCallback]: " + JSON.stringify(jsonData, null, 4))
 	}
 
-	function failureCallback(request) {
-		var reason = ""
-
-		if (request.timedOut) {
-			// Custom flag we set in the timeout handler
-			reason = "Request timed out"
-		} else if (request.readyState === XMLHttpRequest.UNSENT) {
-			reason = "Request was aborted before being sent"
-		} else if (request.readyState === XMLHttpRequest.DONE) {
-			if (request.status === 0) {
-				reason = "Network error (status 0)"
-			} else {
-				reason = "HTTP error " + request.status
-			}
-		} else {
-			reason = "Request failed; readyState=" + request.readyState
-		}
-
-		// Safe extraction of status/response
-		var status = "N/A"
-		var text = "N/A"
-		try { status = request.status } catch (e) {}
-		try { text = request.responseText } catch (e) {}
-
-		debug_print("[failureCallback] " + reason + "; status=" + status + "; response=" + text)
+	function failureCallback(reason) {
+		debug_print("[failureCallback] " + reason)
 	}
 
 	function debug_print(msg) {
@@ -307,7 +281,6 @@ PlasmoidItem {
 	function reloadData(attempt) {
 		if (attempt === undefined) attempt = 1
 
-		// prevent overlapping chains
 		if (attempt === 1) {
 			if (reloadInProgress) {
 				debug_print("[reloadData] ignored new chain, one is already running")
@@ -318,27 +291,30 @@ PlasmoidItem {
 
 		debug_print("[reloadData] attempt " + attempt)
 
-		root.request = getIPdata(
+		let ok = getIPdata(
 			function(jsonData) {
 				debug_print("[reloadData] success")
 				reloadInProgress = false
 				successCallback(jsonData)
 			},
-			function(request) {
+			function(reason) {
 				if (attempt < 5) {
 					var delay = attempt * 2000
-					debug_print("[reloadData] failed, retrying in " + delay + " ms")
+					debug_print("[reloadData] failed: " + reason + " retrying in " + delay + " ms")
 					setTimeout(function() { reloadData(attempt + 1) }, delay)
 				} else {
-					debug_print("[reloadData] final failure")
+					debug_print("[reloadData] final failure: " + reason)
 					reloadInProgress = false
-					failureCallback(request)
+					failureCallback(reason)
 				}
 			}
 		)
+
+		if (!ok) {
+			debug_print("[reloadData] immediate failure (curl exec)")
+			reloadInProgress = false
+		}
 	}
-
-
 
 	function getIconPath(isToolTipArea) {
 		if (root.jsonData === undefined) {
@@ -390,7 +366,7 @@ PlasmoidItem {
                 Layout.minimumHeight: Kirigami.Units.iconSizes.small
                 Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
                 Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
-                Layout.preferredWidth: ExternalJS.getIconSize(widgetIconSize, compactRoot)
+                Layout.preferredWidth: getIconSize(widgetIconSize, compactRoot)
                 Layout.preferredHeight: Layout.preferredWidth
 				svg: KSvg.Svg {
 					id: svg
@@ -430,7 +406,7 @@ PlasmoidItem {
                 Layout.minimumHeight: Kirigami.Units.iconSizes.small
                 Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
                 Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
-                Layout.preferredWidth: ExternalJS.getIconSize(widgetIconSize, compactRoot)
+                Layout.preferredWidth: getIconSize(widgetIconSize, compactRoot)
                 Layout.preferredHeight: Layout.preferredWidth
 				visible: showVPNIcon
 				svg: vpn_svg

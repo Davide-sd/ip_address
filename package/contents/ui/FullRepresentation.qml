@@ -27,8 +27,6 @@ import org.kde.plasma.components as PlasmaComponents
 import QtLocation
 import QtPositioning
 
-import "js/index.js" as ExternalJS
-
 
 Item {
     id: fullRoot
@@ -66,7 +64,7 @@ Item {
         my_map.addMapItem(item)
         debug_print("Added Marker: lat=" + latitude + "; long=" + longitude)
     }
-    
+
     GridLayout {
         id: grid
         rowSpacing: 10
