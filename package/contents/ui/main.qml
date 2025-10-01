@@ -67,6 +67,8 @@ PlasmoidItem {
 	property string curVPNstatus: "unknown"
 
 	property var reloadInProgress: false
+	property var activeRequest: null
+	property var activeTimeoutTimer: null
 
 	property bool debug: true
 
@@ -152,6 +154,7 @@ PlasmoidItem {
 				// to stabilize
 				var wait_for = 5000
 				debug_print("[timer_vpn.onTriggered] detected change, scheduling request. Waiting for " + wait_for + "ms")
+				cancelReloadChain()   // abort old retries
 				setTimeout(function() {
 					debug_print("[timer_vpn.onTriggered] Waited for " + wait_for + "ms. Executing reloadData()")
 					reloadData()
@@ -187,22 +190,20 @@ PlasmoidItem {
 		try {
 			var request = new XMLHttpRequest()
 			request.open('GET', getUrl)
-			var done = false  // guard flag to prevent double-callback
+			var done = false
 
-			// Timeout handler. QML XMLHttpRequest doesn't have ontimeout.
-			// Need to create a custom timer to simulate it.
+			// Timeout timer
 			var myTimeoutTimer = Qt.createQmlObject(
 				"import QtQuick 2.2; Timer {interval: 5000; repeat: false; running: true;}",
 				root,
 				"MyTimeoutTimer"
 			)
-			myTimeoutTimer.triggered.connect(function(){
+			myTimeoutTimer.triggered.connect(function() {
 				if (done) return
-
-            	done = true
+				done = true
 				debug_print("[getIPdata] request TIMEOUT")
 				request.abort()
-				failureCallback(request)   // delegate retry decision
+				failureCallback(request)
 				myTimeoutTimer.destroy()
 			})
 
@@ -224,6 +225,11 @@ PlasmoidItem {
 			}
 
 			request.send()
+
+			// save handles globally so we can cancel later
+			activeRequest = request
+			activeTimeoutTimer = myTimeoutTimer
+
 			return request
 		}
 		catch (err) {
@@ -231,6 +237,25 @@ PlasmoidItem {
 			return null
 		}
 	}
+
+	function cancelReloadChain() {
+		if (reloadInProgress) {
+			debug_print("[cancelReloadChain] Aborting current reload chain")
+
+			if (activeRequest) {
+				try { activeRequest.abort() } catch (e) {}
+				activeRequest = null
+			}
+
+			if (activeTimeoutTimer) {
+				try { activeTimeoutTimer.stop(); activeTimeoutTimer.destroy() } catch (e) {}
+				activeTimeoutTimer = null
+			}
+
+			reloadInProgress = false
+		}
+	}
+
 
 
 	function successCallback(jsonData) {
