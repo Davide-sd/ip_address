@@ -66,8 +66,7 @@ PlasmoidItem {
 	property string prevVPNstatus: "unknown"
 	property string curVPNstatus: "unknown"
 
-	property int countSeconds: 1
-	property bool runTimer: true
+	property var reloadInProgress: false
 
 	property bool debug: true
 
@@ -142,18 +141,21 @@ PlasmoidItem {
 		id: timer_vpn
 		interval: 1000
 		running: showVPNIcon
-		// running: true
 		repeat: true
 		triggeredOnStart: true
 		onTriggered: {
-			debug_print("[timer_vpn.onTriggered] vpnKeywords: " + vpnKeywords)
+			debug_print("[timer_vpn.onTriggered] vpnKeywords: " + vpnKeywords + "; prevVPNstatus=" + prevVPNstatus + "; curVPNstatus=" + curVPNstatus)
 			executable_vpn.exec("nmcli c show --active | grep -E '" + vpnKeywords + "'")
 
 			if (prevVPNstatus != curVPNstatus) {
-				debug_print("[timer_vpn.onTriggered] detected change, sending request")
 				// better to wait for some time in order for the connection
 				// to stabilize
-				setTimeout(function() { reloadData() }, 1000)
+				var wait_for = 5000
+				debug_print("[timer_vpn.onTriggered] detected change, scheduling request. Waiting for " + wait_for + "ms")
+				setTimeout(function() {
+					debug_print("[timer_vpn.onTriggered] Waited for " + wait_for + "ms. Executing reloadData()")
+					reloadData()
+				}, wait_for)
 			}
 		}
 	}
@@ -168,8 +170,9 @@ PlasmoidItem {
 		// browser-specific APIs like setTimeout or setInterval, because QML
 		// uses Qt's JavaScript engine, not a web browser environment.
 		// So we need a custom way to setup a delay.
-		var timer = Qt.createQmlObject('import QtQuick 2.0; Timer { repeat: false }', timer_vpn)
+		var timer = Qt.createQmlObject('import QtQuick 2.0; Timer { repeat: false }', root)
 		timer.interval = delay
+		debug_print("[setTimeout] Timer created, interval = " + timer.interval)
 		timer.triggered.connect(function() {
 			callback()
 			timer.destroy()
@@ -178,33 +181,38 @@ PlasmoidItem {
 	}
 
 	function getIPdata(successCallback, failureCallback) {
-		// append '/json' to the end to force json data response
 		var getUrl = "https://ipinfo.io/json"
 		debug_print("[getIPdata] attempting request")
 
 		try {
 			var request = new XMLHttpRequest()
 			request.open('GET', getUrl)
+			var done = false  // guard flag to prevent double-callback
 
-			// QML XMLHttpRequest doesn't have ontimeout. Need to create a
-			// custom timer to simulate it.
-			var myTimeoutTimer = Qt.createQmlObject("import QtQuick 2.2; Timer {interval: 5000; repeat: false; running: true;}",root,"MyTimeoutTimer");
+			// Timeout handler. QML XMLHttpRequest doesn't have ontimeout.
+			// Need to create a custom timer to simulate it.
+			var myTimeoutTimer = Qt.createQmlObject(
+				"import QtQuick 2.2; Timer {interval: 5000; repeat: false; running: true;}",
+				root,
+				"MyTimeoutTimer"
+			)
 			myTimeoutTimer.triggered.connect(function(){
+				if (done) return
+
+            	done = true
 				debug_print("[getIPdata] request TIMEOUT")
-				request.responseText = "Timeout reached"
 				request.abort()
-				// often, just after a vpn change has been detected, the first
-				// requests are going to timeout. Keep sending them until one
-				// is successful.
-				// TODO: is there any better approach???
-				getIPdata(successCallback, failureCallback)
+				failureCallback(request)   // delegate retry decision
 				myTimeoutTimer.destroy()
-			});
+			})
 
 			request.onreadystatechange = function () {
-				if (request.readyState !== XMLHttpRequest.DONE) {
+				if ((request.readyState !== XMLHttpRequest.DONE) || done)
 					return
-				}
+
+				done = true
+				myTimeoutTimer.running = false
+				myTimeoutTimer.destroy()
 
 				if (request.status !== 200) {
 					failureCallback(request)
@@ -212,8 +220,6 @@ PlasmoidItem {
 				}
 
 				var jsonData = JSON.parse(request.responseText)
-				// remember to stop the timeout timer
-				myTimeoutTimer.running = false
 				successCallback(jsonData)
 			}
 
@@ -221,10 +227,11 @@ PlasmoidItem {
 			return request
 		}
 		catch (err) {
-			debug_print("[getIPdata] Error" + JSON.stringify(err, null, 4))
+			debug_print("[getIPdata] Error " + JSON.stringify(err, null, 4))
 			return null
 		}
 	}
+
 
 	function successCallback(jsonData) {
 		root.jsonData = jsonData
@@ -241,7 +248,30 @@ PlasmoidItem {
 	}
 
 	function failureCallback(request) {
-		debug_print("[failureCallback] request.status: " + request.status + "; request.responseText: " + request.responseText)
+		var reason = ""
+
+		if (request.timedOut) {
+			// Custom flag we set in the timeout handler
+			reason = "Request timed out"
+		} else if (request.readyState === XMLHttpRequest.UNSENT) {
+			reason = "Request was aborted before being sent"
+		} else if (request.readyState === XMLHttpRequest.DONE) {
+			if (request.status === 0) {
+				reason = "Network error (status 0)"
+			} else {
+				reason = "HTTP error " + request.status
+			}
+		} else {
+			reason = "Request failed; readyState=" + request.readyState
+		}
+
+		// Safe extraction of status/response
+		var status = "N/A"
+		var text = "N/A"
+		try { status = request.status } catch (e) {}
+		try { text = request.responseText } catch (e) {}
+
+		debug_print("[failureCallback] " + reason + "; status=" + status + "; response=" + text)
 	}
 
 	function debug_print(msg) {
@@ -249,10 +279,41 @@ PlasmoidItem {
 			console.log("com.github.davide-sd.ip_address", msg)
 	}
 
-	function reloadData() {
-		debug_print("[reloadData] Sending request")
-		root.request = getIPdata(successCallback, failureCallback)
+	function reloadData(attempt) {
+		if (attempt === undefined) attempt = 1
+
+		// prevent overlapping chains
+		if (attempt === 1) {
+			if (reloadInProgress) {
+				debug_print("[reloadData] ignored new chain, one is already running")
+				return
+			}
+			reloadInProgress = true
+		}
+
+		debug_print("[reloadData] attempt " + attempt)
+
+		root.request = getIPdata(
+			function(jsonData) {
+				debug_print("[reloadData] success")
+				reloadInProgress = false
+				successCallback(jsonData)
+			},
+			function(request) {
+				if (attempt < 5) {
+					var delay = attempt * 2000
+					debug_print("[reloadData] failed, retrying in " + delay + " ms")
+					setTimeout(function() { reloadData(attempt + 1) }, delay)
+				} else {
+					debug_print("[reloadData] final failure")
+					reloadInProgress = false
+					failureCallback(request)
+				}
+			}
+		)
 	}
+
+
 
 	function getIconPath(isToolTipArea) {
 		if (root.jsonData === undefined) {

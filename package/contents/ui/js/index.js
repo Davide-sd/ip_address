@@ -14,35 +14,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
- 
-function getIPdata(successCallback, failureCallback) {
-    // append /json to the end to force json data response
-    var getUrl = "https://ipinfo.io/json"
-
-    try {
-        var request = new XMLHttpRequest()
-        request.onreadystatechange = function () {
-            if (request.readyState !== XMLHttpRequest.DONE) {
-                return
-            }
-
-            if (request.status !== 200) {
-                failureCallback(request)
-                return
-            }
-
-            var jsonData = JSON.parse(request.responseText)
-            successCallback(jsonData)
-        }
-        request.open('GET', getUrl)
-        request.send()
-
-        return request
-    }
-    catch (err) {
-        return null
-    }
-}
 
 
 function getIconSize(iconSize, compactRoot) {
