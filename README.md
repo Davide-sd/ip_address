@@ -21,6 +21,7 @@ This widget uses the [excellent flags icon pack by lipis and contributors](https
 
 The primary functions of the widget (check IP address) should work correctly even if the following dependencies are not installed. Anyway, to get the best experience you need:
 
+* `curl`: this is used to query [ipinfo.com](https://ipinfo.io/). It can be installed with `sudo apt install curl`.
 * `libnotify-bin`: this is for showing notifications when clicking links, thus copying the link's content to the clipboard.
 `sudo apt install libnotify-bin`
 * `nmcli`: this is part of the `network-manager` package. It'll check the status of the VPN by executing the command `nmcli c show --active`; if a VPN is active, there should be some entries containing the keywords `vpn` or `tun`. It should already be installed in Ubuntu. Don't know about other distros (let me know in the comments or by opening an issue).
