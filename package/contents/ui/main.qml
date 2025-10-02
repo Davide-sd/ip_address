@@ -173,7 +173,6 @@ PlasmoidItem {
 		onTriggered: {
 			debug_print("[timer.onTriggered]")
 			reloadData()
-			runTimer = false
 		}
 	}
 
