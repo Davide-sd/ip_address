@@ -369,6 +369,7 @@ PlasmoidItem {
 
 			KSvg.SvgItem {
 				id: icon
+				visible: showFlagInCompact
 				Layout.minimumWidth: Kirigami.Units.iconSizes.small
                 Layout.minimumHeight: Kirigami.Units.iconSizes.small
                 Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
