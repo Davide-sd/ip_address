@@ -24,7 +24,6 @@ TODO:
 	the map will be centered on the last known position, not in the marker
 */
 
-
 import QtQuick 2.2
 import QtQuick.Controls as QtControls
 import QtQuick.Layouts
@@ -38,7 +37,6 @@ import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.plasma5support as Plasma5Support
 import org.kde.plasma.plasmoid
 
-
 PlasmoidItem {
 	id: root
 
@@ -49,7 +47,6 @@ PlasmoidItem {
 	readonly property bool showFlagInCompact: Plasmoid.configuration.showFlagInCompact
 	readonly property bool showVPNIcon: Plasmoid.configuration.showVPNIcon
 	readonly property bool showIPInCompact: Plasmoid.configuration.showIPInCompact
-	readonly property string globe_icon_path: "../icons/globe.svg"
 	readonly property bool useLabelThemeColor: Plasmoid.configuration.useLabelThemeColor
     readonly property string labelColor: Plasmoid.configuration.labelColor
     readonly property string vpnKeywords: Plasmoid.configuration.vpnKeywords
@@ -63,11 +60,8 @@ PlasmoidItem {
 	property string prevVPNstatus: "unknown"
 	property string curVPNstatus: "unknown"
 	property var reloadInProgress: false
-
-	// pending callbacks used by getIPdata() -> executable_curl.onNewData
-	// these allows the retry mechanism when a request to ipinfo fails
-    property var _pendingSuccessCallback: null
-    property var _pendingFailureCallback: null
+	property var _pendingSuccessCallback: null
+	property var _pendingFailureCallback: null
 
 	property bool debug: false
 
@@ -80,7 +74,7 @@ PlasmoidItem {
 			connectSource(cmd)
 		}
 		signal exited(int exitCode, int exitStatus, string stdout, string stderr)
- 	 }
+ 	}
 
 	// used to execute query commands for vpn checks
 	Plasma5Support.DataSource {
@@ -118,7 +112,7 @@ PlasmoidItem {
 			}
 
 			exited(exitCode, exitStatus, stdout, stderr)
-			disconnectSource(sourceName) // cmd finished
+			disconnectSource(sourceName)
 		}
 		signal exited(int exitCode, int exitStatus, string stdout, string stderr)
     }
@@ -134,7 +128,6 @@ PlasmoidItem {
 		function exec(cmd) {
 			connectSource(cmd)
 		}
-		// Signal emitted when the command exits
         onNewData: function(sourceName, data) {
 			debug_print("[executable_curl.onNewData]")
 			let exitCode   = data["exit code"]
@@ -142,72 +135,56 @@ PlasmoidItem {
 			let stdout     = data.stdout || ""
 			let stderr     = data.stderr || ""
 
-			// important: free it up
 			disconnectSource(sourceName)
 
 			if (exitStatus !== 0) {
             	var msg = "Process crashed or failed to start: " + sourceName +
 						  ". Status: " + exitStatus + ". Stderr: " + stderr
-
-				if (_pendingFailureCallback) {
-					// NOTE: this callback is important because it deals with
-					// the retry logic
-					var fcb = _pendingFailureCallback
-					_pendingSuccessCallback = null
-					_pendingFailureCallback = null
-					fcb(msg)
-				} else {
-					// fallback: ensure reloadInProgress isn't left true
-					reloadInProgress = false
-					failureCallback(msg)
-				}
+				handleFailure(msg)
 				return
 			}
 
 			if (exitCode !== 0) {
 				var msg = "Command exited with error: " + sourceName +
 						  ". Code: " + exitCode + ". Stderr: " + stderr
-				if (_pendingFailureCallback) {
-					var fcb = _pendingFailureCallback
-					_pendingSuccessCallback = null
-					_pendingFailureCallback = null
-					fcb(msg)
-				} else {
-					reloadInProgress = false
-					failureCallback(msg)
-				}
+				handleFailure(msg)
 				return
 			}
 
 			try {
 				var json = JSON.parse(stdout)
-				if (_pendingSuccessCallback) {
-					var cb = _pendingSuccessCallback
-					_pendingSuccessCallback = null
-					_pendingFailureCallback = null
-					cb(json) // this is your reloadData's inline success callback
-				} else {
-					// fallback: call global success handler and reset state
-					reloadInProgress = false
-					successCallback(json)
-				}
+				handleSuccess(json)
 			} catch (e) {
-				var msg = "Invalid JSON: " + e
-
-				if (_pendingFailureCallback) {
-					var fcb = _pendingFailureCallback
-					_pendingSuccessCallback = null
-					_pendingFailureCallback = null
-					fcb(msg)
-				} else {
-					reloadInProgress = false
-					failureCallback(msg)
-				}
+				handleFailure("Invalid JSON: " + e)
 			}
         }
 	}
 
-	// used to send a request to ip-info
+	function handleFailure(msg) {
+		if (_pendingFailureCallback) {
+			var fcb = _pendingFailureCallback
+			_pendingSuccessCallback = null
+			_pendingFailureCallback = null
+			fcb(msg)
+		} else {
+			reloadInProgress = false
+			failureCallback(msg)
+		}
+	}
+
+	function handleSuccess(json) {
+		if (_pendingSuccessCallback) {
+			var cb = _pendingSuccessCallback
+			_pendingSuccessCallback = null
+			_pendingFailureCallback = null
+			cb(json)
+		} else {
+			reloadInProgress = false
+			successCallback(json)
+		}
+	}
+
+	// timer for updating IP info
 	Timer {
 		id: timer
 		interval: updateIntervalMinutes * 60 * 1000
@@ -228,19 +205,14 @@ PlasmoidItem {
 		repeat: true
 		triggeredOnStart: true
 		onTriggered: {
-			debug_print("[timer_vpn.onTriggered] vpnKeywords: " + vpnKeywords + "; prevVPNstatus=" + prevVPNstatus + "; curVPNstatus=" + curVPNstatus)
+			debug_print("[timer_vpn.onTriggered] vpnKeywords: " + vpnKeywords)
 			executable_vpn.exec("nmcli c show --active | grep -E '" + vpnKeywords + "'")
 
 			if ((prevVPNstatus != "unknown") && (prevVPNstatus != curVPNstatus)) {
-				// better to wait for some time in order for the connection
-				// to stabilize
 				var wait_for = 5000
-				debug_print("[timer_vpn.onTriggered] detected change, scheduling request. Waiting for " + wait_for + "ms")
-				reloadInProgress = false   // abort old retries
-				setTimeout(function() {
-					debug_print("[timer_vpn.onTriggered] Waited for " + wait_for + "ms. Executing reloadData()")
-					reloadData()
-				}, wait_for)
+				debug_print("[timer_vpn.onTriggered] detected change, scheduling reloadData()")
+				reloadInProgress = false
+				setTimeout(function() { reloadData() }, wait_for)
 			}
 		}
 	}
@@ -250,68 +222,17 @@ PlasmoidItem {
 		imagePath: Qt.resolvedUrl("../icons/vpn-shield-off.svg")
 	}
 
-	function _triggerReloadOnClick() {
-		if (!root.reloadInProgress) {
-			root.reloadData()
-		} else {
-			root.debug_print("[onClicked] Reload already in progress, ignoring middle click")
-		}
-	}
-
-	function getIconSize(iconSize, compactRoot) {
-		switch(iconSize) {
-			case 1:
-				return Kirigami.Units.iconSizes.small
-			case 2:
-				return Kirigami.Units.iconSizes.smallMedium
-			case 3:
-				return Kirigami.Units.iconSizes.medium
-			case 4:
-				return Kirigami.Units.iconSizes.large
-			case 5:
-				return Kirigami.Units.iconSizes.huge
-			case 6:
-				return Kirigami.Units.iconSizes.enormous
-			default:
-				return typeof(compactRoot) === "undefined" ? Kirigami.Units.iconSizes.medium : compactRoot.height
-		}
-	}
-
-	function setTimeout(callback, delay) {
-		// NOTE: In QML/Qt Quick, we don't have direct access to JavaScript's
-		// browser-specific APIs like setTimeout or setInterval, because QML
-		// uses Qt's JavaScript engine, not a web browser environment.
-		// So we need a custom way to setup a delay.
-		var timer = Qt.createQmlObject('import QtQuick 2.0; Timer { repeat: false }', root)
-		timer.interval = delay
-		debug_print("[setTimeout] Timer created, interval = " + timer.interval)
-		timer.triggered.connect(function() {
-			callback()
-			timer.destroy()
-		})
-		timer.start()
-	}
-
 	function getIPdata(successCallback, failureCallback) {
 		debug_print("[getIPdata] running curl")
-
-		// store callbacks for the async handler to call later
         _pendingSuccessCallback = successCallback
         _pendingFailureCallback = failureCallback
 
 		try {
-			// -s for silent, --max-time for timeout
 			let cmd = "curl -s --max-time 5 https://ipinfo.io/json"
-
-			// NOTE: to test if the retry logic works correctly, uncomment
-			// this line
-			// let cmd = "curl -s --max-time 5 https://this-will-fail.meow"
-
 			executable_curl.exec(cmd)
 			return true
 		} catch (err) {
 			debug_print("[getIPdata] Error " + err)
-			// clear pending callbacks on immediate failure
             _pendingSuccessCallback = null
             _pendingFailureCallback = null
 			return false
@@ -325,10 +246,13 @@ PlasmoidItem {
 		root.longitude = parseFloat(coords[1])
 		curIPaddr = jsonData.ip
 
+		// 🟩 Send notification when IP changes
 		if (sendNotifOnIPChange && (prevIPaddr != curIPaddr)) {
-			executable.exec("notify-send 'New IP address: " + curIPaddr + "\nVPN status: " + curVPNstatus + "' -a 'Public IP Address widget'")
+			debug_print("[successCallback] IP changed, sending notification.")
+			executable.exec("notify-send -i ../icons/globe.svg 'Public IP Address widget' 'New IP address: " + curIPaddr + "\\nVPN status: " + curVPNstatus + "'")
 			prevIPaddr = curIPaddr
 		}
+
 		debug_print("[successCallback]: " + JSON.stringify(jsonData, null, 4))
 	}
 
@@ -343,17 +267,13 @@ PlasmoidItem {
 
 	function reloadData(attempt) {
 		if (attempt === undefined) attempt = 1
-
-		if (attempt === 1) {
-			if (reloadInProgress) {
-				debug_print("[reloadData] ignored new chain, one is already running")
-				return
-			}
-			reloadInProgress = true
+		if (attempt === 1 && reloadInProgress) {
+			debug_print("[reloadData] ignored new chain, already running")
+			return
 		}
+		reloadInProgress = true
 
-		debug_print("[reloadData] reloadInProgress=" + reloadInProgress + " attempt " + attempt)
-
+		debug_print("[reloadData] attempt " + attempt)
 		let ok = getIPdata(
 			function(jsonData) {
 				debug_print("[reloadData] success")
@@ -379,21 +299,46 @@ PlasmoidItem {
 		}
 	}
 
+	function getIconSize(iconSize, compactRoot) {
+		switch(iconSize) {
+			case 1:
+				return Kirigami.Units.iconSizes.small
+			case 2:
+				return Kirigami.Units.iconSizes.smallMedium
+			case 3:
+				return Kirigami.Units.iconSizes.medium
+			case 4:
+				return Kirigami.Units.iconSizes.large
+			case 5:
+				return Kirigami.Units.iconSizes.huge
+			case 6:
+				return Kirigami.Units.iconSizes.enormous
+			default:
+				return typeof(compactRoot) === "undefined" ? Kirigami.Units.iconSizes.medium : compactRoot.height
+		}
+	}
+
 	function getIconPath(isToolTipArea) {
 		if (root.jsonData === undefined) {
-			return Qt.resolvedUrl(globe_icon_path)
+			return Qt.resolvedUrl("../icons/globe.svg")
 		}
 
 		var country = root.jsonData.country.toLowerCase()
-		if (isToolTipArea) {
+		if (isToolTipArea || showFlagInCompact) {
 			return Qt.resolvedUrl("../icons/1x1/" + country + ".svg")
 		}
 
-		if (!showFlagInCompact) {
-			return Qt.resolvedUrl(globe_icon_path)
-		}
+		return Qt.resolvedUrl("../icons/globe.svg")
+	}
 
-		return Qt.resolvedUrl("../icons/1x1/" + country + ".svg")
+	function setTimeout(callback, delay) {
+		var timer = Qt.createQmlObject('import QtQuick 2.0; Timer { repeat: false }', root)
+		timer.interval = delay
+		timer.triggered.connect(function() {
+			callback()
+			timer.destroy()
+		})
+		timer.start()
 	}
 
 	compactRepresentation: MouseArea {
@@ -401,7 +346,6 @@ PlasmoidItem {
 		hoverEnabled: true
 		acceptedButtons: Qt.LeftButton | Qt.MiddleButton
 
-		// Taken from DigitalClock to ensure uniform sizing when next to each other
         readonly property bool tooSmall: Plasmoid.formFactor === PlasmaCore.Types.Horizontal && Math.round(2 * (compactRoot.height / 5)) <= Kirigami.Theme.smallFont.pixelSize
 		readonly property int fontSize: Plasmoid.configuration.fontSize
 		readonly property bool showCountryLabel: Plasmoid.configuration.showCountryLabel
@@ -412,7 +356,7 @@ PlasmoidItem {
 
 		onClicked: (mouse)=> {
 			if (mouse.button == Qt.MiddleButton) {
-                _triggerReloadOnClick()
+                root.reloadData()
             } else {
                 root.expanded = !root.expanded
             }
@@ -429,8 +373,8 @@ PlasmoidItem {
                 Layout.minimumHeight: Kirigami.Units.iconSizes.small
                 Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
                 Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
-                Layout.preferredWidth: getIconSize(widgetIconSize, compactRoot)
-                Layout.preferredHeight: Layout.preferredWidth
+				Layout.preferredWidth: getIconSize(widgetIconSize, compactRoot)
+				Layout.preferredHeight: Layout.preferredWidth
 				svg: KSvg.Svg {
 					id: svg
 					imagePath: getIconPath(false)
@@ -469,8 +413,8 @@ PlasmoidItem {
                 Layout.minimumHeight: Kirigami.Units.iconSizes.small
                 Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
                 Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
-                Layout.preferredWidth: getIconSize(widgetIconSize, compactRoot)
-                Layout.preferredHeight: Layout.preferredWidth
+				Layout.preferredWidth: getIconSize(widgetIconSize, compactRoot)
+				Layout.preferredHeight: Layout.preferredWidth
 				visible: showVPNIcon
 				svg: vpn_svg
 			}
@@ -489,7 +433,7 @@ PlasmoidItem {
 					details += "<b>" + root.jsonData.country + ", " + root.jsonData.region + ", " + root.jsonData.city + "</b>"
 				}
 				else {
-					details += details += "<b>N/A</b>"
+					details += "<b>N/A</b>"
 				}
 				return details
 			}
@@ -497,5 +441,4 @@ PlasmoidItem {
 	}
 
 	fullRepresentation: FullRepresentation {}
-
 }
