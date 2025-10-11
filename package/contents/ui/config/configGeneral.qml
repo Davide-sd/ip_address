@@ -38,7 +38,7 @@ KCM.SimpleKCM {
     property alias cfg_showIPInCompact: showIPInCompact.checked
     property alias cfg_showVPNIcon: showVPNIcon.checked
     property alias cfg_vpnKeywords: vpnKeywordsEdit.text
-    property alias cfg_sendNotifOnIPChange: sendNotifOnIPChange.checked
+    property alias cfg_sendNotifOnIPChange: sendNotifOnIPChange
 
     Kirigami.FormLayout {
 
@@ -102,8 +102,6 @@ KCM.SimpleKCM {
             id: showVPNIcon
             text: i18n("VPN status icon")
         }
-
-        Item { Layout.fillHeight: true }
 
         QtControls.CheckBox {
             id: sendNotifOnIPChange
