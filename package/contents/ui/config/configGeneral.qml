@@ -38,7 +38,7 @@ KCM.SimpleKCM {
     property alias cfg_showIPInCompact: showIPInCompact.checked
     property alias cfg_showVPNIcon: showVPNIcon.checked
     property alias cfg_vpnKeywords: vpnKeywordsEdit.text
-    property alias cfg_sendNotifOnIPChange: sendNotificationOnIpChange.checked
+    property alias cfg_sendNotifOnIPChange: sendNotifOnIPChange.checked
 
     Kirigami.FormLayout {
 
@@ -56,9 +56,7 @@ KCM.SimpleKCM {
             }
         }
 
-        Item { // tighten layout
-            Layout.fillHeight: true
-        }
+        Item { Layout.fillHeight: true }
 
         QtControls.ComboBox {
             id: widgetIconSizeCombo
@@ -66,9 +64,7 @@ KCM.SimpleKCM {
             model: ["Default", "Small", "Small-Medium", "Medium", "Large", "Huge", "Enormous"]
         }
 
-        Item { // tighten layout
-            Layout.fillHeight: true
-        }
+        Item { Layout.fillHeight: true }
 
         QtControls.SpinBox {
             id: fontSizeSpin
@@ -84,9 +80,7 @@ KCM.SimpleKCM {
             }
         }
 
-        Item { // tighten layout
-            Layout.fillHeight: true
-        }
+        Item { Layout.fillHeight: true }
 
         QtControls.CheckBox {
             Kirigami.FormData.label: i18n("Show on widget:")
@@ -109,9 +103,14 @@ KCM.SimpleKCM {
             text: i18n("VPN status icon")
         }
 
-        Item { // tighten layout
-            Layout.fillHeight: true
+        Item { Layout.fillHeight: true }
+
+        QtControls.CheckBox {
+            id: sendNotifOnIPChange
+            text: i18n("Send notification when public IP changes")
         }
+
+        Item { Layout.fillHeight: true }
 
         QtControls.TextField {
             id: vpnKeywordsEdit
@@ -121,9 +120,7 @@ KCM.SimpleKCM {
             selectByMouse: true
         }
 
-        Item { // tighten layout
-            Layout.fillHeight: true
-        }
+        Item { Layout.fillHeight: true }
 
         QtControls.Label {
             Kirigami.FormData.label: i18n("Explanation for VPN icon:")
@@ -137,11 +134,5 @@ KCM.SimpleKCM {
         QtControls.Label {
             text: i18n("Orange disk: some error happened.")
         }
-
-        QtControls.CheckBox {
-            id: sendNotificationOnIpChange
-            text: i18n("Send notification on IP change")
-        }
     }
-
 }
