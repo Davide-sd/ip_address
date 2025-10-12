@@ -334,13 +334,9 @@ PlasmoidItem {
 					return ""
 				}
 				height: compactRoot.height
-				fontSizeMode: isVertical ? Text.HorizontalFit : Text.FixedSize
-				font.pixelSize: {
-                    if (isVertical)
-                        return undefined
-                    else
-                        return tooSmall ? Kirigami.Theme.defaultFont.pixelSize : Kirigami.Units.iconSizes.roundedIconSize(Kirigami.Units.gridUnit * 2) * fontSize / 100
-                }
+				fontSizeMode: Text.FixedSize
+				font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * fontSize / 100
+
 				visible: showCountryLabel || showIPInCompact
 			}
 
@@ -357,24 +353,6 @@ PlasmoidItem {
 			}
 		}
 
-		PlasmaCore.ToolTipArea {
-	        anchors.fill: parent
-	        icon: getIconPath(true)
-	        mainText: i18n('Public IP Address')
-			subText: {
-				var details = i18n("Public IP Address: ")
-				if (root.jsonData !== undefined) {
-					details += "<b>" + root.jsonData.ip + "</b>"
-					details += "<br/>"
-					details += i18n("Connected to: ")
-					details += "<b>" + root.jsonData.country + ", " + root.jsonData.region + ", " + root.jsonData.city + "</b>"
-				}
-				else {
-					details += "<b>N/A</b>"
-				}
-				return details
-			}
-	    }
 	}
 
 	fullRepresentation: FullRepresentation {}
