@@ -33,12 +33,12 @@
         <entry name="vpnKeywords" type="String">
             <default>vpn|tun</default>
         </entry>
-        <entry name="sendNotifOnIPChange" type="Bool">
-            <default>false</default>
-        </entry>
     </group>
 
     <group name="Appearance">
+        <entry name="mapSize" type="int">
+            <default>150</default>
+        </entry>
         <entry name="mapZoomLevel" type="int">
             <default>13</default>
         </entry>
