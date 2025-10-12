@@ -1,5 +1,8 @@
 # Public IP Address widget for KDE 6
 
+Fork of oryginal widget with added function to hide flag and placeholder globus icon. Also deleted send notification feature which i didn't see use cause for this and cause unnecessary burden.
+
+
 ## Description
 
 Plasma 6 widget for showing informations about your public IP address and the status of your VPN (active/inactive). This is useful for informational purposes and to monitor VPN geolocation.
