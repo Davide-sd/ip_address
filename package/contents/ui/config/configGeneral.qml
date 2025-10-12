@@ -15,6 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
+// fork by Marek M. Marecki marekmarecki2001g@gmail.com 2025
+
 import QtQuick 2.2
 import QtQuick.Controls as QtControls
 import QtQuick.Layouts
@@ -38,7 +40,6 @@ KCM.SimpleKCM {
     property alias cfg_showIPInCompact: showIPInCompact.checked
     property alias cfg_showVPNIcon: showVPNIcon.checked
     property alias cfg_vpnKeywords: vpnKeywordsEdit.text
-    property alias cfg_sendNotifOnIPChange: sendNotifOnIPChange
 
     Kirigami.FormLayout {
 
@@ -101,11 +102,6 @@ KCM.SimpleKCM {
         QtControls.CheckBox {
             id: showVPNIcon
             text: i18n("VPN status icon")
-        }
-
-        QtControls.CheckBox {
-            id: sendNotifOnIPChange
-            text: i18n("Send notification when public IP changes")
         }
 
         Item { Layout.fillHeight: true }
