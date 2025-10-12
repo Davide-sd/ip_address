@@ -45,7 +45,7 @@
         <entry name="showHostname" type="Bool">
             <default>false</default>
         </entry>
-        <entry name="layoutRow" type="Bool">
+        <entry name="layoutColumn" type="Bool">
             <default>true</default>
         </entry>
         <entry name="useLabelThemeColor" type="Bool">
