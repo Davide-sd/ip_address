@@ -15,14 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-/*
-TODO:
-1. After loading the widgets, go to settings -> Check "Show Hostname"
-    -> Click OK -> The plugin freeze, no errors, no messages... WTF?
-2. Center the map when opening full representation. As of now, if you scroll
-	and move the minimap, then close the full representation, then reopen it,
-	the map will be centered on the last known position, not in the marker
-*/
+// fork by Marek M. Marecki marekmarecki2001g@gmail.com 2025
 
 import QtQuick 2.2
 import QtQuick.Controls as QtControls
@@ -37,6 +30,8 @@ import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.plasma5support as Plasma5Support
 import org.kde.plasma.plasmoid
 
+import "js/index.js" as ExternalJS
+
 PlasmoidItem {
 	id: root
 
@@ -50,13 +45,10 @@ PlasmoidItem {
 	readonly property bool useLabelThemeColor: Plasmoid.configuration.useLabelThemeColor
     readonly property string labelColor: Plasmoid.configuration.labelColor
     readonly property string vpnKeywords: Plasmoid.configuration.vpnKeywords
-    readonly property bool sendNotifOnIPChange: Plasmoid.configuration.sendNotifOnIPChange
 
 	property real latitude: 0
 	property real longitude: 0
 	property var jsonData: {}
-	property var curIPaddr: ""
-	property var prevIPaddr: ""
 	property string prevVPNstatus: "unknown"
 	property string curVPNstatus: "unknown"
 	property var reloadInProgress: false
@@ -64,17 +56,6 @@ PlasmoidItem {
 	property var _pendingFailureCallback: null
 
 	property bool debug: false
-
-	// used to execute 'send notification commands'
-	Plasma5Support.DataSource {
-		id: executable
-		engine: "executable"
-		connectedSources: []
-		function exec(cmd) {
-			connectSource(cmd)
-		}
-		signal exited(int exitCode, int exitStatus, string stdout, string stderr)
- 	}
 
 	// used to execute query commands for vpn checks
 	Plasma5Support.DataSource {
@@ -244,15 +225,6 @@ PlasmoidItem {
 		var coords = jsonData.loc.split(",")
 		root.latitude = parseFloat(coords[0])
 		root.longitude = parseFloat(coords[1])
-		curIPaddr = jsonData.ip
-
-		// 🟩 Send notification when IP changes
-		if (sendNotifOnIPChange && (prevIPaddr != curIPaddr)) {
-			debug_print("[successCallback] IP changed, sending notification.")
-			executable.exec("notify-send -i ../icons/globe.svg 'Public IP Address widget' 'New IP address: " + curIPaddr + "\\nVPN status: " + curVPNstatus + "'")
-			prevIPaddr = curIPaddr
-		}
-
 		debug_print("[successCallback]: " + JSON.stringify(jsonData, null, 4))
 	}
 
@@ -296,25 +268,6 @@ PlasmoidItem {
 		if (!ok) {
 			debug_print("[reloadData] immediate failure (curl exec)")
 			reloadInProgress = false
-		}
-	}
-
-	function getIconSize(iconSize, compactRoot) {
-		switch(iconSize) {
-			case 1:
-				return Kirigami.Units.iconSizes.small
-			case 2:
-				return Kirigami.Units.iconSizes.smallMedium
-			case 3:
-				return Kirigami.Units.iconSizes.medium
-			case 4:
-				return Kirigami.Units.iconSizes.large
-			case 5:
-				return Kirigami.Units.iconSizes.huge
-			case 6:
-				return Kirigami.Units.iconSizes.enormous
-			default:
-				return typeof(compactRoot) === "undefined" ? Kirigami.Units.iconSizes.medium : compactRoot.height
 		}
 	}
 
@@ -374,7 +327,7 @@ PlasmoidItem {
                 Layout.minimumHeight: Kirigami.Units.iconSizes.small
                 Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
                 Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
-				Layout.preferredWidth: getIconSize(widgetIconSize, compactRoot)
+				Layout.preferredWidth: ExternalJS.getIconSize(widgetIconSize, compactRoot)
 				Layout.preferredHeight: Layout.preferredWidth
 				svg: KSvg.Svg {
 					id: svg
@@ -414,7 +367,7 @@ PlasmoidItem {
                 Layout.minimumHeight: Kirigami.Units.iconSizes.small
                 Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
                 Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
-				Layout.preferredWidth: getIconSize(widgetIconSize, compactRoot)
+				Layout.preferredWidth: ExternalJS.getIconSize(widgetIconSize, compactRoot)
 				Layout.preferredHeight: Layout.preferredWidth
 				visible: showVPNIcon
 				svg: vpn_svg
