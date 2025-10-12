@@ -72,8 +72,8 @@ Item {
 
         Item {
             id: mapContainer
-            Layout.preferredWidth: layoutColumn ?  mapSize : parent.height*0.75
-            Layout.preferredHeight: layoutColumn ? parent.height*0.75 : mapSize
+            Layout.preferredWidth: layoutColumn ?  mapSize : parent.height-2
+            Layout.preferredHeight: layoutColumn ? parent.height-2 : mapSize
             Layout.alignment: layoutColumn ? Qt.AlignLeft : Qt.AlignHCenter
 
             Plugin {
@@ -191,7 +191,7 @@ Item {
             QtControls.Button {
                 Layout.columnSpan: 2
                 Layout.alignment: Qt.AlignHCenter
-                Layout.preferredWidth: parent.width*0.4
+                Layout.preferredWidth: parent.width-5
                 text: i18n("Update")
                 onClicked: {
                     debug_print("[Update onClicked]")
