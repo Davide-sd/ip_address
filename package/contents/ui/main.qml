@@ -203,23 +203,6 @@ PlasmoidItem {
 		imagePath: Qt.resolvedUrl("../icons/vpn-shield-off.svg")
 	}
 
-	function getIPdata(successCallback, failureCallback) {
-		debug_print("[getIPdata] running curl")
-        _pendingSuccessCallback = successCallback
-        _pendingFailureCallback = failureCallback
-
-		try {
-			let cmd = "curl -s --max-time 5 https://ipinfo.io/json"
-			executable_curl.exec(cmd)
-			return true
-		} catch (err) {
-			debug_print("[getIPdata] Error " + err)
-            _pendingSuccessCallback = null
-            _pendingFailureCallback = null
-			return false
-		}
-	}
-
 	function successCallback(jsonData) {
 		root.jsonData = jsonData
 		var coords = jsonData.loc.split(",")
@@ -246,7 +229,7 @@ PlasmoidItem {
 		reloadInProgress = true
 
 		debug_print("[reloadData] attempt " + attempt)
-		let ok = getIPdata(
+		let ok = ExternalJS.getIPdata(
 			function(jsonData) {
 				debug_print("[reloadData] success")
 				reloadInProgress = false
