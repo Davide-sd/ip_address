@@ -30,7 +30,7 @@ import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.plasma5support as Plasma5Support
 import org.kde.plasma.plasmoid
 
-import "js/index.js" as ExternalJS
+import "js/index.js" as External
 
 PlasmoidItem {
 	id: root
@@ -229,7 +229,7 @@ PlasmoidItem {
 		reloadInProgress = true
 
 		debug_print("[reloadData] attempt " + attempt)
-		let ok = ExternalJS.getIPdata(
+		let ok = External.getIPdata(
 			function(jsonData) {
 				debug_print("[reloadData] success")
 				reloadInProgress = false
@@ -310,7 +310,7 @@ PlasmoidItem {
                 Layout.minimumHeight: Kirigami.Units.iconSizes.small
                 Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
                 Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
-				Layout.preferredWidth: ExternalJS.getIconSize(widgetIconSize, compactRoot)
+				Layout.preferredWidth: External.getIconSize(widgetIconSize, compactRoot)
 				Layout.preferredHeight: Layout.preferredWidth
 				svg: KSvg.Svg {
 					id: svg
@@ -350,7 +350,7 @@ PlasmoidItem {
                 Layout.minimumHeight: Kirigami.Units.iconSizes.small
                 Layout.maximumWidth: Kirigami.Units.iconSizes.enormous
                 Layout.maximumHeight: Kirigami.Units.iconSizes.enormous
-				Layout.preferredWidth: ExternalJS.getIconSize(widgetIconSize, compactRoot)
+				Layout.preferredWidth: External.getIconSize(widgetIconSize, compactRoot)
 				Layout.preferredHeight: Layout.preferredWidth
 				visible: showVPNIcon
 				svg: vpn_svg
