@@ -16,35 +16,23 @@
  */
 
  // fork by Marek M. Marecki marekmarecki2001g@gmail.com 2025
- 
-function getIPdata(successCallback, failureCallback) {
-    // append /json to the end to force json data response
-    var getUrl = "https://ipinfo.io/json"
 
-    try {
-        var request = new XMLHttpRequest()
-        request.onreadystatechange = function () {
-            if (request.readyState !== XMLHttpRequest.DONE) {
-                return
-            }
+	function getIPdata(successCallback, failureCallback) {
+		debug_print("[getIPdata] running curl")
+        _pendingSuccessCallback = successCallback
+        _pendingFailureCallback = failureCallback
 
-            if (request.status !== 200) {
-                failureCallback(request)
-                return
-            }
-
-            var jsonData = JSON.parse(request.responseText)
-            successCallback(jsonData)
-        }
-        request.open('GET', getUrl)
-        request.send()
-
-        return request
-    }
-    catch (err) {
-        return null
-    }
-}
+		try {
+			let cmd = "curl -s --max-time 5 https://ipinfo.io/json"
+			executable_curl.exec(cmd)
+			return true
+		} catch (err) {
+			debug_print("[getIPdata] Error " + err)
+            _pendingSuccessCallback = null
+            _pendingFailureCallback = null
+			return false
+		}
+	}
 
 
 function getIconSize(iconSize, compactRoot) {
