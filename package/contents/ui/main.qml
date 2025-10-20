@@ -493,14 +493,11 @@ PlasmoidItem {
     Column {
         spacing: 4
         PlasmaComponents.Label {
-            text: i18n("Public IP Address")
-            font.bold: true
-        }
-        PlasmaComponents.Label {
+			textFormat: Text.RichText
             text: {
                 if (root.jsonData !== undefined) {
                     return i18n(
-                        "IP: %1\nConnected to: %2, %3, %4 \nVPN: %5",
+                        "Public IP Address: <b>%1</b><br>Connected to: <b>%2, %3, %4</b> <br>VPN: <b>%5</b>",
 						root.jsonData.ip,
                         root.jsonData.country,
                         root.jsonData.region,
@@ -511,11 +508,10 @@ PlasmoidItem {
                     return i18n("Connected to: N/A")
                 }
             }
-            wrapMode: Text.WordWrap
+
         }
     }
 	}
-
 
 	fullRepresentation: FullRepresentation {}
 
