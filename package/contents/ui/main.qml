@@ -497,12 +497,12 @@ PlasmoidItem {
             text: {
                 if (root.jsonData !== undefined) {
                     return i18n(
-                        "Public IP Address: <b>%1</b><br>Connected to: <b>%2, %3, %4</b> <br>VPN: <b>%5</b>",
+                        "Public IP Address: <b>%1</b><br>Connected to: <b>%2, %3, %4</b><br>Coordinates:<b>%5</b>",
 						root.jsonData.ip,
                         root.jsonData.country,
                         root.jsonData.region,
                         root.jsonData.city,
-                        root.curVPNstatus
+                        root.jsonData.loc
                     )
                 } else {
                     return i18n("Connected to: N/A")
