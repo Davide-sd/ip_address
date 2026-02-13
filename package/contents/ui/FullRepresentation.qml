@@ -38,6 +38,8 @@ Item {
     readonly property bool useLinkThemeColor: Plasmoid.configuration.useLinkThemeColor
     readonly property string linkColor: Plasmoid.configuration.linkColor
 
+    readonly property string thunderforestAPIKey: Plasmoid.configuration.thunderforestAPIKey
+
     property string mapLink: "https://www.openstreetmap.org/?mlat=" + latitude + "&mlon=" + longitude + "#map=" + mapZoomLevel + "/" + latitude + "/" + longitude
 
     id: fullRoot
@@ -80,6 +82,18 @@ Item {
             Plugin {
                 id: mapPlugin
                 name: "osm" // "mapboxgl", "esri", ...
+
+                PluginParameter {
+                    name: "osm.mapping.custom.host";
+                    value: {
+                        // catch the case that there is no proper API key
+                        if( thunderforestAPIKey.length === 0 )
+                            return "https://tile.thunderforest.com/atlas/%z/%x/%y.png"
+                        else
+                            return "https://tile.thunderforest.com/atlas/%z/%x/%y.png?apikey=" + thunderforestAPIKey
+                    }
+                }
+
             }
 
             Map {
@@ -94,6 +108,8 @@ Item {
                     addMarker(41.8902, 12.4922)
                     return QtPositioning.coordinate(41.8902, 12.4922) // Rome
                 }
+                activeMapType: my_map.supportedMapTypes[my_map.supportedMapTypes.length - 1]
+
                 zoomLevel: mapZoomLevel
             }
         }
