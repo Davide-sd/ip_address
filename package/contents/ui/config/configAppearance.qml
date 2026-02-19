@@ -146,7 +146,7 @@ KCM.SimpleKCM {
         QtControls.CheckBox {
             id: showOrganization
             Kirigami.FormData.label: i18n("Others:")
-            text: i18n("Show organization name")
+            text: i18n("Show organization name in full view")
         }
 
     }
