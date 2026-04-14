@@ -475,25 +475,42 @@ PlasmoidItem {
 				svg: vpn_svg
 			}
 		}
+	}
 
-		PlasmaCore.ToolTipArea {
-	        anchors.fill: parent
-	        icon: getIconPath(true)
-	        mainText: i18n('Public IP Address')
-			subText: {
-				var details = i18n("Public IP Address: ")
-				if (root.jsonData !== undefined) {
-					details += "<b>" + root.jsonData.ip + "</b>"
-					details += "<br/>"
-					details += i18n("Connected to: ")
-					details += "<b>" + root.jsonData.country + ", " + root.jsonData.region + ", " + root.jsonData.city + "</b>"
-				}
-				else {
-					details += details += "<b>N/A</b>"
-				}
-				return details
-			}
-	    }
+	toolTipItem: Row {
+    spacing: 8
+    padding: 4
+    KSvg.SvgItem {
+        width: Kirigami.Units.iconSizes.large
+        height: Kirigami.Units.iconSizes.large
+        svg: KSvg.Svg {
+            imagePath: getIconPath(true)
+        }
+        visible: root.jsonData !== undefined
+        anchors.verticalCenter: parent.verticalCenter
+    }
+
+    Column {
+        spacing: 4
+        PlasmaComponents.Label {
+			textFormat: Text.RichText
+            text: {
+                if (root.jsonData !== undefined) {
+                    return i18n(
+                        "Public IP Address: <b>%1</b><br>Connected to: <b>%2, %3, %4</b><br>Coordinates:<b>%5</b>",
+						root.jsonData.ip,
+                        root.jsonData.country,
+                        root.jsonData.region,
+                        root.jsonData.city,
+                        root.jsonData.loc
+                    )
+                } else {
+                    return i18n("Connected to: N/A")
+                }
+            }
+
+        }
+    }
 	}
 
 	fullRepresentation: FullRepresentation {}
