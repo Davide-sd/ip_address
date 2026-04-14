@@ -247,7 +247,6 @@ PlasmoidItem {
 		}
 	}
 
-true// used to check trigger file for external refresh requests
 	Plasma5Support.DataSource {
 		id: executable_trigger
 		engine: "executable"
