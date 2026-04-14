@@ -477,40 +477,50 @@ PlasmoidItem {
 		}
 	}
 
-	toolTipItem: Row {
-    spacing: 8
-    padding: 4
-    KSvg.SvgItem {
-        width: Kirigami.Units.iconSizes.large
-        height: Kirigami.Units.iconSizes.large
-        svg: KSvg.Svg {
-            imagePath: getIconPath(true)
-        }
-        visible: root.jsonData !== undefined
-        anchors.verticalCenter: parent.verticalCenter
-    }
+	// NOTE: using a Row instead of Item would slightly simplify the layout,
+	// but QtQuick 2.2 do not support `Row.padding`, which would cause an
+	// error during the loading of the extension, making it unusable. Hence,
+	// the use of Item.
+	toolTipItem: Item {
+		implicitWidth: row.implicitWidth + 8
+		implicitHeight: row.implicitHeight + 8
 
-    Column {
-        spacing: 4
-        PlasmaComponents.Label {
-			textFormat: Text.RichText
-            text: {
-                if (root.jsonData !== undefined) {
-                    return i18n(
-                        "Public IP Address: <b>%1</b><br>Connected to: <b>%2, %3, %4</b><br>Coordinates:<b>%5</b>",
-						root.jsonData.ip,
-                        root.jsonData.country,
-                        root.jsonData.region,
-                        root.jsonData.city,
-                        root.jsonData.loc
-                    )
-                } else {
-                    return i18n("Connected to: N/A")
-                }
-            }
+		Row {
+			id: row
+			x: 4   // left padding
+			y: 4   // top padding
+			spacing: 8
 
-        }
-    }
+			KSvg.SvgItem {
+				width: Kirigami.Units.iconSizes.medium
+				height: Kirigami.Units.iconSizes.medium
+				svg: KSvg.Svg {
+					imagePath: getIconPath(true)
+				}
+				visible: root.jsonData !== undefined
+				anchors.verticalCenter: parent.verticalCenter
+			}
+
+			Column {
+				spacing: 4
+				PlasmaComponents.Label {
+					textFormat: Text.RichText
+					text: {
+						if (root.jsonData !== undefined) {
+							return i18n(
+								"Public IP Address: <b>%1</b><br>Connected to: <b>%2, %3, %4</b>",
+								root.jsonData.ip,
+								root.jsonData.country,
+								root.jsonData.region,
+								root.jsonData.city
+							)
+						} else {
+							return i18n("Public IP Address: <b>N/A</b>")
+						}
+					}
+				}
+			}
+		}
 	}
 
 	fullRepresentation: FullRepresentation {}
