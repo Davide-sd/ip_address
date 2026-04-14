@@ -10,6 +10,21 @@ By default, the widget update itself every 5 minutes. You can change this behavi
 
 You can change the colors of the displayed informations in the settings.
 
+### External Refresh Trigger
+
+You can configure a trigger file path in the widget settings. When this file is modified (e.g., via `touch`), the widget will automatically refresh the IP information. This is useful for integrating with VPN scripts or tools like Tailscale that don't use NetworkManager.
+
+Example usage:
+```bash
+# Set trigger file in widget settings to: ~/.cache/ip_address_refresh
+
+# Then trigger a refresh from CLI:
+touch ~/.cache/ip_address_refresh
+
+# Or integrate with Tailscale:
+tailscale set --exit-node=mynode && sleep 2 && touch ~/.cache/ip_address_refresh
+```
+
 This widget uses the [excellent flags icon pack by lipis and contributors](https://github.com/lipis/flag-icon-css).
 
 ![tooltip screenshot](screenshots/screenshot_4.png)

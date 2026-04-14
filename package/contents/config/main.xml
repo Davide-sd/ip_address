@@ -36,6 +36,9 @@
         <entry name="sendNotifOnIPChange" type="Bool">
             <default>false</default>
         </entry>
+        <entry name="triggerFile" type="String">
+            <default>~/.cache/ip_address_refresh</default>
+        </entry>
     </group>
 
     <group name="Appearance">

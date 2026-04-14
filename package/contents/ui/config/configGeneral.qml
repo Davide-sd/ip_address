@@ -39,6 +39,7 @@ KCM.SimpleKCM {
     property alias cfg_showVPNIcon: showVPNIcon.checked
     property alias cfg_vpnKeywords: vpnKeywordsEdit.text
     property alias cfg_sendNotifOnIPChange: sendNotificationOnIpChange.checked
+    property alias cfg_triggerFile: triggerFileEdit.text
 
     Kirigami.FormLayout {
 
@@ -141,6 +142,22 @@ KCM.SimpleKCM {
         QtControls.CheckBox {
             id: sendNotificationOnIpChange
             text: i18n("Send notification on IP change")
+        }
+
+        Item { // tighten layout
+            Layout.fillHeight: true
+        }
+
+        QtControls.TextField {
+            id: triggerFileEdit
+            Kirigami.FormData.label: i18n("Trigger file (optional):")
+            placeholderText: "~/.cache/ip_address_refresh"
+        }
+
+        QtControls.Label {
+            text: i18n("Touch this file to trigger a refresh")
+            font: Kirigami.Theme.smallFont
+            opacity: 0.7
         }
     }
 

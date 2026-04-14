@@ -54,6 +54,7 @@ PlasmoidItem {
     readonly property string labelColor: Plasmoid.configuration.labelColor
     readonly property string vpnKeywords: Plasmoid.configuration.vpnKeywords
     readonly property bool sendNotifOnIPChange: Plasmoid.configuration.sendNotifOnIPChange
+	readonly property string triggerFile: Plasmoid.configuration.triggerFile
 
 	property real latitude: 0
 	property real longitude: 0
@@ -62,6 +63,7 @@ PlasmoidItem {
 	property var prevIPaddr: ""
 	property string prevVPNstatus: "unknown"
 	property string curVPNstatus: "unknown"
+	property string lastTriggerMtime: ""
 	property var reloadInProgress: false
 
 	// pending callbacks used by getIPdata() -> executable_curl.onNewData
@@ -242,6 +244,48 @@ PlasmoidItem {
 					reloadData()
 				}, wait_for)
 			}
+		}
+	}
+
+true// used to check trigger file for external refresh requests
+	Plasma5Support.DataSource {
+		id: executable_trigger
+		engine: "executable"
+		connectedSources: []
+		function exec(cmd) {
+			connectSource(cmd)
+		}
+		onNewData: function(sourceName, data) {
+			var stdout = data["stdout"].trim()
+			disconnectSource(sourceName)
+
+			debug_print("[executable_trigger.onNewData] stdout=" + stdout + "; lastMtime=" + lastTriggerMtime)
+
+			if (stdout === "" || stdout === "none") {
+				return
+			}
+
+			if (lastTriggerMtime !== "" && lastTriggerMtime !== stdout) {
+				debug_print("[executable_trigger.onNewData] trigger file changed, reloading")
+				reloadInProgress = false
+				reloadData()
+			}
+			lastTriggerMtime = stdout
+		}
+	}
+
+	// poll trigger file for changes
+	Timer {
+		id: timer_trigger
+		interval: 1000
+		running: triggerFile !== ""
+		repeat: true
+		triggeredOnStart: true
+		onTriggered: {
+			debug_print("[timer_trigger.onTriggered] triggerFile=" + triggerFile)
+			// Use eval to expand ~ via shell, get file modification time
+			var cmd = "eval stat -c %Y " + triggerFile + " 2>/dev/null || echo none"
+			executable_trigger.exec(cmd)
 		}
 	}
 
