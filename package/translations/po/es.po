@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ip_address\n"
 "Report-Msgid-Bugs-To: https://github.com/Davide-sd/ip_address\n"
-"POT-Creation-Date: 2024-03-22 19:10+0100\n"
+"POT-Creation-Date: 2026-04-14 13:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,10 +24,6 @@ msgstr "General"
 #: ../contents/config/config.qml
 msgid "Appearance"
 msgstr "Aspecto"
-
-#: ../contents/ui/config/configAppearance.qml
-msgid "Map Size:"
-msgstr "Tamaño del mapa:"
 
 #: ../contents/ui/config/configAppearance.qml
 msgid "Map default zoom level:"
@@ -119,6 +115,18 @@ msgstr ""
 msgid "Orange disk: some error happened."
 msgstr ""
 
+#: ../contents/ui/config/configGeneral.qml
+msgid "Send notification on IP change"
+msgstr ""
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Trigger file (optional):"
+msgstr ""
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Touch this file to trigger a refresh"
+msgstr ""
+
 #: ../contents/ui/FullRepresentation.qml
 msgid "IP address:"
 msgstr ""
@@ -156,9 +164,18 @@ msgid "Update"
 msgstr ""
 
 #: ../contents/ui/main.qml
-msgid "Public IP Address: "
-msgstr "Dirección IP pública:"
+msgid "Public IP Address: <b>%1</b><br>Connected to: <b>%2, %3, %4</b>"
+msgstr "Dirección IP pública: <b>%1</b><br>Conectado a: <b>%2, %3, %4</b>"
 
 #: ../contents/ui/main.qml
-msgid "Connected to: "
-msgstr "Conectado a:"
+msgid "Public IP Address: <b>N/A</b>"
+msgstr ""
+
+#~ msgid "Map Size:"
+#~ msgstr "Tamaño del mapa:"
+
+#~ msgid "Public IP Address: "
+#~ msgstr "Dirección IP pública:"
+
+#~ msgid "Connected to: "
+#~ msgstr "Conectado a:"
