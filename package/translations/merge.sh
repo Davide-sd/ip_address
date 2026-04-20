@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Version: 15
 
 # https://techbase.kde.org/Development/Tutorials/Localization/i18n_Build_Systems
@@ -19,6 +19,7 @@ website=$(echo "${website:1:-1}")
 bugAddress="$website"
 packageRoot=".." # Root of translatable sources
 projectName="${plasmoidName}" # project name
+widgetName="${plasmoidName}"
 
 #---
 if [ -z "$plasmoidName" ]; then
