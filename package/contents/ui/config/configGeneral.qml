@@ -41,6 +41,8 @@ KCM.SimpleKCM {
     property alias cfg_sendNotifOnIPChange: sendNotificationOnIpChange.checked
     property alias cfg_triggerFile: triggerFileEdit.text
 
+    property alias cfg_thunderforestAPIKey: thunderforestAPIKeyEdit.text
+
     Kirigami.FormLayout {
 
         QtControls.SpinBox {
@@ -55,6 +57,18 @@ KCM.SimpleKCM {
             valueFromText: function (text) {
                 return parseInt(text)
             }
+        }
+
+        Item { // tighten layout
+            Layout.fillHeight: true
+        }
+
+        QtControls.TextField {
+            id: thunderforestAPIKeyEdit
+            Kirigami.FormData.label: "Thunderforest API key\n(https://www.thunderforest.com/):"
+            width: 300
+            focus: false
+            selectByMouse: true
         }
 
         Item { // tighten layout
