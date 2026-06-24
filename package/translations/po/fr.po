@@ -1,0 +1,173 @@
+# Translation of com.github.davide-sd.ip_address in French
+# Copyright (C) 2026
+# This file is distributed under the same license as the com.github.davide-sd.ip_address package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.davide-sd.ip_address \n"
+"Report-Msgid-Bugs-To: https://github.com/Davide-sd/ip_address\n"
+"POT-Creation-Date: 2026-05-06 14:12+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Nausill_on <Nausill_on@proton.me>\n"
+"Language-Team: French <Nausill_on@proton.me>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../contents/config/config.qml
+msgid "General"
+msgstr "Général"
+
+#: ../contents/config/config.qml
+msgid "Appearance"
+msgstr "Apparence"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Map default zoom level:"
+msgstr "Niveau de zoom par défaut de la carte :"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Layout:"
+msgstr "Disposition :"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "horizontal layout"
+msgstr "disposition horizontale"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "vertical layout"
+msgstr "disposition verticale"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Label Color:"
+msgstr "Couleur des libellés :"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Use Theme"
+msgstr "Utiliser le thème"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Link Color:"
+msgstr "Couleur des liens :"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Others:"
+msgstr "Autres :"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Show host name"
+msgstr "Afficher le nom d'hôte"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Update Interval:"
+msgstr "Intervalle de mise à jour :"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Icon size:"
+msgstr "Taille des icônes :"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Font size:"
+msgstr "Taille de la police :"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Show on widget:"
+msgstr "Afficher sur le widget :"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Country flag"
+msgstr "Drapeau du pays"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Country label"
+msgstr "Libellé du pays"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "IP address"
+msgstr "Adresse IP"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "VPN status icon"
+msgstr "Icône de statut VPN"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid ""
+"VPN keywords for nmcli (use\n"
+"pipe character as separator):"
+msgstr ""
+"Mots-clés VPN pour nmcli (utilisez\n"
+"le caractère pipe comme séparateur) :"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Explanation for VPN icon:"
+msgstr "Explication de l'icône VPN :"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Red shield: VPN is not active;"
+msgstr "Bouclier rouge : le VPN est inactif ;"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Green shield: VPN is active;"
+msgstr "Bouclier vert : le VPN est actif ;"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Orange disk: some error happened."
+msgstr "Disque orange : une erreur s'est produite."
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Send notification on IP change"
+msgstr "Notification lors du changement d'IP"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Trigger file (optional):"
+msgstr "Fichier déclencheur (optionnel) :"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Touch this file to trigger a refresh"
+msgstr "'touch' ce fichier pour rafraîchir"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "IP address:"
+msgstr "Adresse IP :"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Country:"
+msgstr "Pays :"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Region:"
+msgstr "Région :"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Postal Code:"
+msgstr "Code postal :"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "City:"
+msgstr "Ville :"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Coordinates:"
+msgstr "Coordonnées :"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Hostname:"
+msgstr "Nom d'hôte :"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Open map in the browser"
+msgstr "Ouvrir la carte"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Update"
+msgstr "Mettre à jour"
+
+#: ../contents/ui/main.qml
+msgid "Public IP Address: <b>%1</b><br>Connected to: <b>%2, %3, %4</b>"
+msgstr "Adresse IP publique : <b>%1</b><br>Connecté à : <b>%2, %3, %4</b>"
+
+#: ../contents/ui/main.qml
+msgid "Public IP Address: <b>N/A</b>"
+msgstr "Adresse IP publique : <b>N/D</b>"

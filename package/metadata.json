@@ -13,6 +13,7 @@
         "Description[it]": "Mostra l'indirizzo IP pubblico e lo stato VPN",
         "Description[nl]": "Toon je openbare ip-adres en de vpn-status",
         "Description[pl]": "Pokaż publiczny adres IP i status VPN",
+        "Description[fr]": "Affiche l'adresse IP publique et le statut VPN",
         "Icon": "globe.svg",
         "Id": "com.github.davide-sd.ip_address",
         "License": "GPL-2.0+",
@@ -21,6 +22,7 @@
         "Name[it]": "Indirizzo IP pubblico",
         "Name[nl]": "Openbaar ip-adres",
         "Name[pl]": "Publiczny adres IP",
+        "Name[fr]": "Adresse IP publique",
         "ServiceTypes": [
             "Plasma/Applet"
         ],
