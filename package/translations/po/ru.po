@@ -102,15 +102,15 @@ msgstr "Ключевые слова VPN для nmcli\n"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Explanation for VPN icon:"
-msgstr "Объяснение иконки VPN"
+msgstr "Объяснение иконки VPN:"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Red shield: VPN is not active;"
-msgstr "Красный щит: VPN неактивен"
+msgstr "Красный щит: VPN неактивен;"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Green shield: VPN is active;"
-msgstr "Зеленый щит: VPN активен"
+msgstr "Зеленый щит: VPN активен;"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Orange disk: some error happened."
