@@ -1,0 +1,176 @@
+# Translation of com.github.davide-sd.ip_address in ru
+# Copyright (C) 2026
+# This file is distributed under the same license as the com.github.davide-sd.ip_address package.
+# Gleb Pavliuk <pglebr@gmail.com>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.davide-sd.ip_address \n"
+"Report-Msgid-Bugs-To: https://github.com/Davide-sd/ip_address\n"
+"POT-Creation-Date: 2026-04-14 13:06+0200\n"
+"PO-Revision-Date: 2026-11-10 19:44+0100\n"
+"Last-Translator: Gleb Pavliuk <pglebr@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../contents/config/config.qml
+msgid "General"
+msgstr "Общие"
+
+#: ../contents/config/config.qml
+msgid "Appearance"
+msgstr "Внешний вид"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Map default zoom level:"
+msgstr "Уровень масштабирования карты по умолчанию:"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Layout:"
+msgstr "Макет:"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "horizontal layout"
+msgstr "горизонтальный макет"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "vertical layout"
+msgstr "вертикальный макет"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Label Color:"
+msgstr "Цвет текста:"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Use Theme"
+msgstr "Использовать тему"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Link Color:"
+msgstr "Цвет ссылок:"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Others:"
+msgstr "Другое:"
+
+#: ../contents/ui/config/configAppearance.qml
+msgid "Show host name"
+msgstr "Показывать имя хоста"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Update Interval:"
+msgstr "Интервал обновления:"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Icon size:"
+msgstr "Размер иконки:"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Font size:"
+msgstr "Размер шрифта:"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Show on widget:"
+msgstr "Показывать на виджете:"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Country flag"
+msgstr "Флаг страны"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Country label"
+msgstr "Метка страны"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "IP address"
+msgstr "IP-адрес"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "VPN status icon"
+msgstr "Иконка статуса VPN"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid ""
+"VPN keywords for nmcli (use\n"
+"pipe character as separator):"
+msgstr ""
+"Ключевые слова VPN для nmcli\n"
+"(используйте вертикальную черту как разделитель)"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Explanation for VPN icon:"
+msgstr "Объяснение иконки VPN:"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Red shield: VPN is not active;"
+msgstr "Красный щит: VPN неактивен;"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Green shield: VPN is active;"
+msgstr "Зеленый щит: VPN активен;"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Orange disk: some error happened."
+msgstr "Оранжевый диск: произошла какая-то ошибка."
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Send notification on IP change"
+msgstr "Отправлять уведомление при смене IP"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Trigger file (optional):"
+msgstr "Триггер-файл (необязательно):"
+
+#: ../contents/ui/config/configGeneral.qml
+msgid "Touch this file to trigger a refresh"
+msgstr ""
+"Используйте touch на этом файле,\n"
+"чтобы инициировать обновление"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "IP address:"
+msgstr "IP-адрес:"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Country:"
+msgstr "Страна:"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Region:"
+msgstr "Регион:"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Postal Code:"
+msgstr "Почтовый индекс:"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "City:"
+msgstr "Город:"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Coordinates:"
+msgstr "Координаты:"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Hostname:"
+msgstr "Имя хоста:"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Open map in the browser"
+msgstr "Открыть карту в браузере"
+
+#: ../contents/ui/FullRepresentation.qml
+msgid "Update"
+msgstr "Обновить"
+
+#: ../contents/ui/main.qml
+msgid "Public IP Address: <b>%1</b><br>Connected to: <b>%2, %3, %4</b>"
+msgstr "Внешний IP-адрес: <b>%1</b><br>Подключен к: <b>%2, %3, %4</b>"
+
+#: ../contents/ui/main.qml
+msgid "Public IP Address: <b>N/A</b>"
+msgstr "Внешний IP-адрес: <b>N/A</b>"
