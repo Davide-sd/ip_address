@@ -14,7 +14,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../contents/config/config.qml
@@ -97,7 +97,7 @@ msgstr "Иконка статуса VPN"
 msgid ""
 "VPN keywords for nmcli (use\n"
 "pipe character as separator):"
-msgstr "Ключевые слова VPN для nmcli\n
+msgstr "Ключевые слова VPN для nmcli\n"
 "(используйте вертикальную черту как разделитель)"
 
 #: ../contents/ui/config/configGeneral.qml
