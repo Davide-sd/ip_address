@@ -1,4 +1,4 @@
-# Translation of com.github.davide-sd.ip_address in LANGUAGE
+# Translation of com.github.davide-sd.ip_address in ru
 # Copyright (C) 2026
 # This file is distributed under the same license as the com.github.davide-sd.ip_address package.
 # Gleb Pavliuk <pglebr@gmail.com>, 2026.
@@ -12,7 +12,7 @@ msgstr ""
 "PO-Revision-Date: 2026-11-10 19:44+0100\n"
 "Last-Translator: Gleb Pavliuk <pglebr@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: Russian\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -97,7 +97,8 @@ msgstr "Иконка статуса VPN"
 msgid ""
 "VPN keywords for nmcli (use\n"
 "pipe character as separator):"
-msgstr "Ключевые слова VPN для nmcli\n"
+msgstr ""
+"Ключевые слова VPN для nmcli\n"
 "(используйте вертикальную черту как разделитель)"
 
 #: ../contents/ui/config/configGeneral.qml
@@ -126,7 +127,8 @@ msgstr "Триггер-файл (необязательно):"
 
 #: ../contents/ui/config/configGeneral.qml
 msgid "Touch this file to trigger a refresh"
-msgstr "Используйте touch на этом файле,\n"
+msgstr ""
+"Используйте touch на этом файле,\n"
 "чтобы инициировать обновление"
 
 #: ../contents/ui/FullRepresentation.qml
